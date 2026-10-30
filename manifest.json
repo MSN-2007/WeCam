@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "CAMU AutoPass – V1",
+  "version": "1.0.0",
+  "description": "Schedules and submits the three upcoming daily Weekend leave + gate-pass applications on Thursday.",
+  "permissions": ["alarms", "storage", "tabs"],
+  "host_permissions": ["https://student.camu.in/*"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_popup": "popup.html", "default_title": "CAMU AutoPass" },
+  "content_scripts": [{
+    "matches": ["https://student.camu.in/v1/leaveManagement*", "https://student.camu.in/v2/leaveManagement*"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }]
+}
