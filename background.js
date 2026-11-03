@@ -1,6 +1,5 @@
 const ALARM='camu-autopass-check';
-const PAGES={v1:'https://student.camu.in/v1/leaveManagement',v2:'https://student.camu.in/v2/leaveManagement'};
-const pageUrl=settings=>PAGES[settings?.pageVersion]||PAGES.v2;
+const URL='https://student.camu.in/v2/leaveManagement';
 const TZ='Asia/Kolkata';
 const localParts=(date=new Date())=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date).reduce((o,p)=>(o[p.type]=p.value,o),{});
 function thursdayDateKey(p){return `${p.year}-${p.month}-${p.day}`;}
@@ -11,6 +10,6 @@ chrome.alarms.onAlarm.addListener(async alarm=>{if(alarm.name!==ALARM)return;con
  const key=thursdayDateKey(p);const {lastAttemptThursday}=await chrome.storage.local.get('lastAttemptThursday');if(lastAttemptThursday===key)return;
  // Mark before opening so repeated alarm ticks cannot launch duplicate runs.
  await chrome.storage.local.set({lastAttemptThursday:key,running:true});
- const tab=await chrome.tabs.create({url:pageUrl(settings),active:false});await chrome.storage.local.set({automationTabId:tab.id});
+ const tab=await chrome.tabs.create({url:URL,active:false});await chrome.storage.local.set({automationTabId:tab.id});
 });
 chrome.tabs.onUpdated.addListener(async(tabId,change,tab)=>{if(change.status!=='complete')return;const {automationTabId}=await chrome.storage.local.get('automationTabId');if(tabId!==automationTabId)return;try{await chrome.tabs.sendMessage(tabId,{type:'START_AUTOPASS'});}catch(e){await chrome.storage.local.set({running:false,lastRunResult:{status:'error',message:'Could not connect to CAMU page. Open CAMU and check the extension.'}});}});

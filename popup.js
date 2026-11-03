@@ -1,7 +1,53 @@
 const $ = id => document.getElementById(id);
 function applyTheme(theme){const selected=theme==='dark'?'dark':'light';document.documentElement.dataset.theme=selected;$('theme').value=selected;}
 $('theme').addEventListener('change',async()=>{const theme=$('theme').value;applyTheme(theme);const {settings={}}=await chrome.storage.local.get('settings');await chrome.storage.local.set({settings:{...settings,theme}});});
-async function load(){const {settings={},monthHistory=[],historyMonth=''}=await chrome.storage.local.get(['settings','monthHistory','historyMonth']);applyTheme(settings.theme||'light');$('enabled').checked=!!settings.enabled;$('runAt').value=settings.runAt||'09:05';$('fromTime').value=settings.fromTime||'06:00';$('toTime').value=settings.toTime||'20:00';$('pageVersion').value=settings.pageVersion||'v2';const month=new Date().toISOString().slice(0,7);const rows=historyMonth===month?monthHistory:[];$('history').innerHTML=rows.length?rows.slice().reverse().map(x=>`<div><span>${x.label}</span><b>${x.status}</b></div>`).join(''):'No activity this month.';}
-$('save').addEventListener('click',async()=>{const runAt=$('runAt').value;const [h,m]=runAt.split(':').map(Number);if(!runAt||h<9||h>23||(h===23&&m>0)){ $('status').textContent='Choose a Thursday start time from 09:00 through 23:00.';return;}if($('fromTime').value>=$('toTime').value){$('status').textContent='End time must be later than start time.';return;}const settings={enabled:$('enabled').checked,runAt,fromTime:$('fromTime').value,toTime:$('toTime').value,pageVersion:$('pageVersion').value,timezone:'Asia/Kolkata',theme:$('theme').value};await chrome.storage.local.set({settings});chrome.runtime.sendMessage({type:'RESCHEDULE'});$('status').textContent='Settings saved.';});
-$('test').addEventListener('click',async()=>{const [tab]=await chrome.tabs.query({active:true,lastFocusedWindow:true});if(!tab?.id){$('status').textContent='Open the CAMU Leave Management page first.';return;}chrome.tabs.sendMessage(tab.id,{type:'DETECT_ONLY'},r=>$('status').textContent=chrome.runtime.lastError?'Open the CAMU Leave Management page first.':(r?.message||'Detection finished.'));});
+async function load(){const {settings={},monthHistory=[],historyMonth=''}=await chrome.storage.local.get(['settings','monthHistory','historyMonth']);applyTheme(settings.theme||'light');$('enabled').checked=!!settings.enabled;$('runAt').value=settings.runAt||'09:05';$('fromTime').value=settings.fromTime||'06:00';$('toTime').value=settings.toTime||'20:00';const month=new Date().toISOString().slice(0,7);const rows=historyMonth===month?monthHistory:[];$('history').innerHTML=rows.length?rows.slice().reverse().map(x=>`<div><span>${x.label}</span><b>${x.status}</b></div>`).join(''):'No activity this month.';}
+$('save').addEventListener('click',async()=>{const runAt=$('runAt').value;const [h,m]=runAt.split(':').map(Number);if(!runAt||h<9||h>23||(h===23&&m>0)){ $('status').textContent='Choose a Thursday start time from 09:00 through 23:00.';return;}if($('fromTime').value>=$('toTime').value){$('status').textContent='End time must be later than start time.';return;}const settings={enabled:$('enabled').checked,runAt,fromTime:$('fromTime').value,toTime:$('toTime').value,timezone:'Asia/Kolkata',theme:$('theme').value};await chrome.storage.local.set({settings});chrome.runtime.sendMessage({type:'RESCHEDULE'});$('status').textContent='Settings saved.';});
+async function ensureContentScript(tabId){
+  try {
+    const pong=await chrome.tabs.sendMessage(tabId,{type:'PING'});
+    if(pong?.ok)return;
+  } catch(e) {}
+  await chrome.scripting.executeScript({target:{tabId},files:['content.js']});
+}
+$('test').addEventListener('click',async()=>{
+  $('status').textContent='Checking CAMU page…';
+  try{
+    const [tab]=await chrome.tabs.query({active:true,lastFocusedWindow:true});
+    if(!tab?.id||!tab.url?.startsWith('https://student.camu.in/v2/leaveManagement')){$('status').textContent='Open the CAMU Leave Management page first.';return;}
+    await ensureContentScript(tab.id);
+    const r=await chrome.tabs.sendMessage(tab.id,{type:'DETECT_ONLY'});
+    $('status').textContent=r?.message||'Detection finished.';
+  }catch(e){$('status').textContent='Could not inspect CAMU page: '+e.message;}
+});
+$('runNow').addEventListener('click',async()=>{
+ const button=$('runNow');button.disabled=true;$('status').textContent='Connecting to CAMU…';
+ try{
+  const [tab]=await chrome.tabs.query({active:true,lastFocusedWindow:true});
+  if(!tab?.id||!tab.url?.startsWith('https://student.camu.in/v2/leaveManagement')){
+   $('status').textContent='Open the CAMU Leave Management page in the active tab, then click Run now.';return;
+  }
+  const {settings={}}=await chrome.storage.local.get('settings');
+  await chrome.storage.local.set({settings:{...settings,fromTime:$('fromTime').value||'06:00',toTime:$('toTime').value||'20:00'}});
+  await ensureContentScript(tab.id);
+  const response=await chrome.tabs.sendMessage(tab.id,{type:'RUN_MANUAL'});
+  $('status').textContent=response?.message||'Run request sent. Keep the CAMU tab open.';
+ }catch(e){
+  $('status').textContent='Could not connect to CAMU: '+e.message+'. Refresh CAMU and try again.';
+ }finally{button.disabled=false;}
+});
 load();
+
+$('diagnoseTime').addEventListener('click',async()=>{
+ const button=$('diagnoseTime');button.disabled=true;$('status').textContent='Inspecting CAMU time controls…';$('diagnosticReport').value='';
+ try{
+  const [tab]=await chrome.tabs.query({active:true,lastFocusedWindow:true});
+  if(!tab?.id||!tab.url?.startsWith('https://student.camu.in/v2/leaveManagement')){$('status').textContent='Open the CAMU Leave Management page first.';return;}
+  await ensureContentScript(tab.id);
+  const r=await chrome.tabs.sendMessage(tab.id,{type:'DIAGNOSE_TIME_PICKER'});
+  if(!r?.ok)throw new Error(r?.message||'Diagnostic failed.');
+  $('diagnosticReport').value=JSON.stringify(r.report,null,2);
+  $('status').textContent='Diagnostic ready. Copy the report below and send it in chat.';
+ }catch(e){$('status').textContent='Could not run diagnostic: '+e.message+'. Close DevTools if open, refresh CAMU, then try again.';}
+ finally{button.disabled=false;}
+});
