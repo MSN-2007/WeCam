@@ -5,30 +5,32 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
 
   const ext = typeof browser !== 'undefined' ? browser : chrome;
 
+  function extractHeaders(rawHeaders) {
+    const headers = {};
+    if (!rawHeaders) return headers;
+    if (rawHeaders instanceof Headers) {
+      rawHeaders.forEach((v, k) => {
+        headers[k] = v;
+      });
+    } else if (Array.isArray(rawHeaders)) {
+      for (const [k, v] of rawHeaders) headers[k] = v;
+    } else if (typeof rawHeaders === 'object') {
+      Object.assign(headers, rawHeaders);
+    }
+    return headers;
+  }
+
   // ─── API Sniffer / Request Interceptor ─────────────────────────────
   // Intercepts CAMU's leave & gate-pass API requests to allow silent
   // native backend execution without browser tabs.
   function injectApiSniffer() {
     const script = document.createElement('script');
-    script.textContent = `(${function () {
-      const isLeaveApi = (url) => typeof url === 'string' && /leave|gatepass|attendance|studentleave/i.test(url);
+    script.textContent = `
+      ${extractHeaders.toString()};
+      (${function () {
+        const isLeaveApi = (url) => typeof url === 'string' && /leave|gatepass|attendance|studentleave/i.test(url);
 
-      function extractHeaders(rawHeaders) {
-        const headers = {};
-        if (!rawHeaders) return headers;
-        if (rawHeaders instanceof Headers) {
-          rawHeaders.forEach((v, k) => {
-            headers[k] = v;
-          });
-        } else if (Array.isArray(rawHeaders)) {
-          for (const [k, v] of rawHeaders) headers[k] = v;
-        } else if (typeof rawHeaders === 'object') {
-          Object.assign(headers, rawHeaders);
-        }
-        return headers;
-      }
-
-      const origFetch = window.fetch;
+        const origFetch = window.fetch;
       window.fetch = async function (...args) {
         try {
           const [resource, config] = args;
