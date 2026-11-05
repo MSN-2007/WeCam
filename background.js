@@ -229,10 +229,9 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 ext.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name !== ALARM) return;
-  const { settings = {}, running = false, apiTemplate = null } = await ext.storage.local.get([
+  const { settings = {}, running = false } = await ext.storage.local.get([
     'settings',
     'running',
-    'apiTemplate',
   ]);
   if (!settings.enabled || running) return;
   const p = localParts();

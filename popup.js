@@ -19,11 +19,10 @@ $('theme').addEventListener('change', async () => {
 });
 
 async function load() {
-  const { settings = {}, monthHistory = [], historyMonth = '', apiTemplate = null } = await ext.storage.local.get([
+  const { settings = {}, monthHistory = [], historyMonth = '' } = await ext.storage.local.get([
     'settings',
     'monthHistory',
     'historyMonth',
-    'apiTemplate',
   ]);
   applyTheme(settings.theme || 'dark');
   $('enabled').checked = !!settings.enabled;

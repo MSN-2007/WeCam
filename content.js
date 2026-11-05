@@ -937,7 +937,7 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     }
     if (msg?.type === 'DETECT_ONLY') {
       detectOnly().then((r) => {
-        const onTarget = /^\/v2\/leaveManagement/.test(location.pathname);
+        const onTarget = location.pathname.startsWith('/v2/leaveManagement');
         sendResponse({
           message: onTarget
             ? 'Detection: ' + JSON.stringify(r)
