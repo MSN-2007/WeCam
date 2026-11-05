@@ -73,27 +73,29 @@ async function recordRunFinished(result) {
   });
 }
 
-async function sendAutomationCommand(tabId, message, maxRetries = 5) {
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      const pong = await ext.tabs.sendMessage(tabId, { type: 'PING' });
+function sendAutomationCommand(tabId, message, retriesLeft = 5) {
+  return ext.tabs
+    .sendMessage(tabId, { type: 'PING' })
+    .then((pong) => {
       if (pong?.ok) {
-        await ext.tabs.sendMessage(tabId, message);
-        return;
+        return ext.tabs.sendMessage(tabId, message);
       }
-    } catch {
-      // Content script may not be ready yet, wait before retrying
-    }
-    await new Promise((resolve) => setTimeout(resolve, 800));
-  }
-  try {
-    if (ext.scripting?.executeScript) {
-      await ext.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
-      await ext.tabs.sendMessage(tabId, message);
-    }
-  } catch (err) {
-    console.error('Failed to dispatch automation command to tab:', err);
-  }
+      throw new Error('Tab not ready');
+    })
+    .catch((err) => {
+      if (retriesLeft > 0) {
+        return new Promise((resolve) => setTimeout(resolve, 800)).then(() =>
+          sendAutomationCommand(tabId, message, retriesLeft - 1)
+        );
+      }
+      if (ext.scripting?.executeScript) {
+        return ext.scripting
+          .executeScript({ target: { tabId }, files: ['content.js'] })
+          .then(() => ext.tabs.sendMessage(tabId, message))
+          .catch((e) => console.error('Failed to dispatch automation command:', e));
+      }
+      console.error('Failed to dispatch automation command:', err);
+    });
 }
 
 ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
