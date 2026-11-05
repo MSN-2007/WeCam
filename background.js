@@ -37,26 +37,21 @@ ext.runtime.onInstalled.addListener(ensureAlarm);
 ext.runtime.onStartup.addListener(ensureAlarm);
 
 function upcomingWeekendDates() {
-  const weekday = new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short' }).format(new Date());
-  const dayMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
-  const today = dayMap[weekday] ?? 0;
-  const delta = (5 - today + 7) % 7 || 7;
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: TZ,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-    .format(new Date())
-    .split('-')
-    .map(Number);
-  const base = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
-  base.setUTCDate(base.getUTCDate() + delta);
-  return [0, 1, 2].map((n) => {
-    const x = new Date(base);
-    x.setUTCDate(x.getUTCDate() + n);
-    return `${x.getUTCFullYear()}-${String(x.getUTCMonth() + 1).padStart(2, '0')}-${String(x.getUTCDate()).padStart(2, '0')}`;
-  });
+  const now = new Date();
+  const kolkataNow = new Date(now.toLocaleString('en-US', { timeZone: TZ }));
+  const daysUntilFriday = (5 - kolkataNow.getDay() + 7) % 7 || 7;
+  kolkataNow.setDate(kolkataNow.getDate() + daysUntilFriday);
+
+  const dates = [];
+  for (let offset = 0; offset < 3; offset++) {
+    const d = new Date(kolkataNow);
+    d.setDate(kolkataNow.getDate() + offset);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    dates.push(`${year}-${month}-${day}`);
+  }
+  return dates;
 }
 
 function substitutePayloadDates(rawBody, dayIso) {
