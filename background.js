@@ -117,7 +117,20 @@ async function submitSingleDay(apiTemplate, dayIso, dayName) {
   return { day: dayName, date: dayIso, status };
 }
 
+async function closeAutomationTab() {
+  const { automationTabId } = await ext.storage.local.get('automationTabId');
+  if (automationTabId) {
+    try {
+      await ext.tabs.remove(automationTabId);
+    } catch {
+      // Tab might have already been closed by user
+    }
+    await ext.storage.local.remove('automationTabId');
+  }
+}
+
 async function recordRunFinished(result) {
+  await closeAutomationTab();
   const now = new Date();
   const month = new Intl.DateTimeFormat('en-CA', {
     timeZone: TZ,
@@ -253,6 +266,7 @@ ext.tabs.onUpdated.addListener(async (tabId, change) => {
   try {
     await ext.tabs.sendMessage(tabId, { type: 'START_AUTOPASS' });
   } catch {
+    await closeAutomationTab();
     await ext.storage.local.set({
       running: false,
       lastRunResult: {
