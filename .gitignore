@@ -10,3 +10,10 @@ web-ext-artifacts/
 # Node
 node_modules/
 package-lock.json
+
+# Xcode & macOS build artifacts
+build/
+DerivedData/
+*.xcuserstate
+project.xcworkspace/xcuserdata/
+xcuserdata/

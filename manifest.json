@@ -1,8 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "CAMU AutoPass – V3.5",
+  "name": "CAMU AutoPass \u2013 V3.5",
   "version": "3.5.0",
-  "description": "Cross-browser CAMU weekend leave and gate-pass automation (Chrome & Firefox) with React-Select detection, semantic time validation, and Thursday scheduling.",
+  "description": "Cross-browser CAMU weekend leave and gate-pass automation (Chrome, Firefox & Safari) with React-Select detection, semantic time validation, and Thursday scheduling.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png",
+    "512": "icons/icon-512.png"
+  },
   "permissions": [
     "alarms",
     "storage",
@@ -20,7 +27,12 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "CAMU AutoPass"
+    "default_title": "CAMU AutoPass",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
+    }
   },
   "browser_specific_settings": {
     "gecko": {
@@ -31,6 +43,9 @@
           "none"
         ]
       }
+    },
+    "safari": {
+      "strict_min_version": "15.4"
     }
   },
   "content_scripts": [

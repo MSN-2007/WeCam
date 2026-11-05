@@ -14,7 +14,10 @@ const localParts = (date = new Date()) =>
     hourCycle: 'h23',
   })
     .formatToParts(date)
-    .reduce((o, p) => ((o[p.type] = p.value), o), {});
+    .reduce((o, p) => {
+      o[p.type] = p.value;
+      return o;
+    }, {});
 
 function thursdayDateKey(p) {
   return `${p.year}-${p.month}-${p.day}`;
@@ -30,7 +33,9 @@ ext.runtime.onStartup.addListener(ensureAlarm);
 
 ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg?.type === 'RESCHEDULE') {
-    ensureAlarm();
+    ensureAlarm().catch((err) => {
+      console.error('Failed to reschedule alarm:', err);
+    });
     sendResponse({ ok: true });
     return true;
   }
@@ -51,7 +56,7 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       const history = historyMonth === month ? monthHistory : [];
       const result = msg.result || {};
       const entries = (result.results || []).map((x) => ({
-        label: `${x.day || 'Application'} – ${x.date || ''}`,
+        label: `${x.day || 'Application'} \u2013 ${x.date || ''}`,
         status: x.status || result.status || 'unknown',
       }));
       if (!entries.length) entries.push({ label: 'Automation run', status: result.status || 'error' });
@@ -61,7 +66,9 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         monthHistory: [...history, ...entries],
         historyMonth: month,
       });
-    })();
+    })().catch((err) => {
+      console.error('Failed to update run history:', err);
+    });
     sendResponse({ ok: true });
     return true;
   }

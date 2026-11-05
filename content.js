@@ -282,12 +282,17 @@ async function startAutoPass(manual=false){
  try{
   const {settings={}}=await ext.storage.local.get('settings');
   if(!manual){
-   const p=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Kolkata',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).reduce((o,x)=>(o[x.type]=x.value,o),{});
+   const p=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Kolkata',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).reduce((o,x)=>{o[x.type]=x.value;return o;},{});
    const minute=Number(p.hour)*60+Number(p.minute);
    if(p.weekday!=='Thu'||minute<540||minute>1380)throw new Error('Outside the permitted Thursday 09:00–23:00 window.');
   }
   const dates=upcomingWeekend(),names=['Friday','Saturday','Sunday'],results=[];
-  for(let i=0;i<3;i++){results.push(await fillAndSubmit(dates[i],settings,names[i]));await ext.storage.local.set({currentExecution:results});}
+  results.push(await fillAndSubmit(dates[0],settings,names[0]));
+  await ext.storage.local.set({currentExecution:results});
+  results.push(await fillAndSubmit(dates[1],settings,names[1]));
+  await ext.storage.local.set({currentExecution:results});
+  results.push(await fillAndSubmit(dates[2],settings,names[2]));
+  await ext.storage.local.set({currentExecution:results});
   await ext.runtime.sendMessage({type:'RUN_FINISHED',result:{status:results.every(x=>['submitted','duplicate'].includes(x.status))?'complete':'needs_attention',results,mode:manual?'manual':'scheduled'}});
   return results;
  }finally{autoPassRunning=false;}

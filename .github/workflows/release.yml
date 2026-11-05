@@ -16,18 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Build extension zip
         id: package
         run: |
           VERSION="${GITHUB_REF_NAME:-v$(jq -r .version manifest.json)}"
           ZIP_NAME="camu-autopass-${VERSION}.zip"
-          zip -r "$ZIP_NAME" manifest.json background.js content.js popup.html popup.js popup.css README.md
+          zip -r "$ZIP_NAME" manifest.json background.js content.js popup.html popup.js popup.css README.md icons/
           echo "zip_name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Attach zip to GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'release'
         with:
           files: ${{ steps.package.outputs.zip_name }}

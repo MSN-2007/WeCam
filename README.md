@@ -1,6 +1,6 @@
 # CAMU AutoPass – Version 1 (V3.5)
 
-A cross-browser Manifest V3 extension (Chrome, Firefox, and Chromium/Gecko-based browsers) for Thursday-only automation of **three separate daily applications** (Friday, Saturday, Sunday). Each daily form includes the Weekend leave and the integrated Weekend gate pass, so the expected total is **three form submissions**, not six.
+A cross-browser Manifest V3 extension (Chrome, Firefox, Safari, and Chromium/Gecko/WebKit-based browsers) for Thursday-only automation of **three separate daily applications** (Friday, Saturday, Sunday). Each daily form includes the Weekend leave and the integrated Weekend gate pass, so the expected total is **three form submissions**, not six.
 
 ---
 
@@ -10,7 +10,7 @@ You can download the pre-packaged extension ZIP directly from the GitHub Release
 
 | Release | Compatibility | Direct Download |
 | :--- | :--- | :--- |
-| **v3.5.0 (Latest)** | **Chrome & Firefox** (Cross-Browser MV3) | [Download camu-autopass-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-v3.5.0.zip) |
+| **v3.5.0 (Latest)** | **Chrome, Firefox & Safari** (Cross-Browser MV3) | [Download camu-autopass-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-v3.5.0.zip) |
 | **v3.4.0 (Pre-Firefox)** | **Chrome only** (Original MV3) | [Download camu-autopass-v3.4.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.4.0/camu-autopass-v3.4.0.zip) |
 
 All releases with changelogs and assets are available on the [GitHub Releases page](https://github.com/Rish3666/WeCam/releases) (and upstream [MSN-2007/WeCam Releases](https://github.com/MSN-2007/WeCam/releases)).
@@ -48,6 +48,24 @@ All releases with changelogs and assets are available on the [GitHub Releases pa
 6. Sign in to CAMU in the same Firefox profile.
 7. Click the extension icon in your toolbar and save your desired settings.
 
+### Safari (macOS & iOS)
+Safari uses Apple's native App Extension wrapper. A pre-configured Xcode project is included in `safari/CAMU AutoPass/`:
+
+1. Open Safari -> **Settings** (or **Preferences**) -> **Advanced** tab -> Check **Show features for web developers**.
+2. In Safari's menu bar, open **Develop** -> Check **Allow Unsigned Extensions** (enter your macOS password when prompted).
+3. Open and run the project:
+   ```bash
+   open "safari/CAMU AutoPass/CAMU AutoPass.xcodeproj"
+   ```
+   Or build from the terminal using the included helper script:
+   ```bash
+   ./scripts/build-safari.sh
+   ```
+4. In Xcode, select the **CAMU AutoPass (macOS)** scheme and press **Run** (`Cmd + R`).
+5. In Safari, open **Settings** -> **Extensions** and check the box next to **CAMU AutoPass**.
+6. When prompted, select **Always Allow on Every Website** (or grant permissions for `student.camu.in`).
+7. Sign in to CAMU and open the popup from your Safari toolbar!
+
 ---
 
 The browser must be running and the computer awake during the Thursday execution window for scheduled runs. The extension also includes a **Run now** button: open the CAMU Leave Management page, then click Run now to start the same three-day workflow immediately. Manual runs calculate the next full Friday–Sunday weekend.
@@ -72,15 +90,17 @@ Open the CAMU Leave Management page and click the extension's `Diagnose CAMU tim
 
 V3.2 specifically fixes CAMU React-Select opening: it targets the visible control wrapper for Gate Pass Type (the input is opacity:0), dispatches the mousedown event React-Select expects, and verifies the selected value before continuing. If the option cannot be confirmed, it stops before Save.
 
-## V3.3 React-Select interaction correction
+V3.3 React-Select interaction correction
 The CAMU custom dropdown's first control mousedown focuses the hidden input; a subsequent control mousedown opens the menu. V3.3 performs this two-step interaction, then uses ArrowDown as a fallback and selects only an exact visible option match. If the menu/options or selected value cannot be confirmed, it stops before Save. This is code-level calibrated from the supplied DOM report; live portal execution still needs user verification.
 
-## V3.4 preselected Leave Type fix
+V3.4 preselected Leave Type fix
 The user's screenshot confirms that CAMU already displays `Leave` as the selected Leave Type. React-Select excludes the currently selected item from its open options list, which is why the diagnostic showed only `On Duty` and `Medical Leave`. V3.4 first reads the selected-value node and accepts an exact existing selection before attempting to open the menu. The same protection applies to Gate Pass Type. If a different value is selected, the extension still opens the menu and requires an exact visible option match.
 
-## V3.5 Firefox and Gecko Compatibility
-- **Unified Extension API (`browser` / `chrome`):** Handles Promise resolution transparently across Firefox's native Promise-based `browser.*` namespace and Chrome's Manifest V3 `chrome.*` namespace.
-- **Dual Background Dispatch:** Configures `background.scripts` for Firefox event pages while retaining `background.service_worker` for Chromium service workers.
-- **Gecko Manifest Settings:** Added `browser_specific_settings.gecko` with unique extension ID and declared `data_collection_permissions`.
-- **Safe DOM Injection:** Replaced dynamic `innerHTML` rendering in the history view with sanitized DOM creation methods (`replaceChildren` and `textContent`), adhering to Mozilla add-on security policies.
-- **Automated Release Workflow:** Added `.github/workflows/release.yml` to package and attach extension ZIP binaries to GitHub Releases automatically.
+## V3.5 Cross-Browser Compatibility (Chrome, Firefox & Safari)
+- **Unified Extension API (`browser` / `chrome`):** Handles Promise resolution transparently across Firefox's native Promise-based `browser.*` namespace, Chrome's Manifest V3 `chrome.*` namespace, and Apple Safari's WebExtension APIs.
+- **Safari Web Extension App Wrapper:** Includes a native macOS/iOS Xcode project (`safari/CAMU AutoPass/`) and build script (`scripts/build-safari.sh`) using Apple's official WebExtension specifications.
+- **Dual Background Dispatch:** Configures `background.scripts` for Firefox/Safari event pages alongside `background.service_worker` for Chromium service workers.
+- **Browser-Specific Manifest Settings:** Configured `browser_specific_settings.gecko` (ID `camu-autopass@wecam.addon`, `strict_min_version: 142.0`) and `browser_specific_settings.safari` (`strict_min_version: 15.4`).
+- **Standardized Extension Icons:** High-resolution icons (16px to 1024px) for browser toolbars, Safari extension tabs, and App Store metadata.
+- **Safe DOM Injection:** Replaced dynamic `innerHTML` rendering in the history view with sanitized DOM creation methods (`replaceChildren` and `textContent`), adhering to Mozilla and Apple add-on security policies.
+- **Automated Release Workflow:** GitHub Actions release workflow packages and attaches extension ZIP binaries to GitHub Releases automatically.
