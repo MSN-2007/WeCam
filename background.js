@@ -1,10 +1,7 @@
 const ext = typeof browser !== 'undefined' ? browser : chrome;
 const ALARM = 'camu-autopass-check';
-const PAGES = {
-  v1: 'https://student.camu.in/v1/leaveManagement',
-  v2: 'https://student.camu.in/v2/leaveManagement',
-};
-const pageUrl = (settings) => PAGES[settings?.pageVersion] || PAGES.v2;
+const CAMU_V2_URL = 'https://student.camu.in/v2/leaveManagement';
+const pageUrl = () => CAMU_V2_URL;
 const TZ = 'Asia/Kolkata';
 
 const localParts = (date = new Date()) =>
@@ -24,7 +21,7 @@ const localParts = (date = new Date()) =>
       return o;
     }, {});
 
-function thursdayDateKey(p) {
+function scheduleDateKey(p) {
   return `${p.year}-${p.month}-${p.day}`;
 }
 
@@ -197,6 +194,20 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ ok: true });
     return true;
   }
+  if (msg?.type === 'TRIGGER_BACKGROUND_RUN') {
+    (async () => {
+      const { running = false } = await ext.storage.local.get('running');
+      if (running) {
+        throw new Error('An automation run is already in progress.');
+      }
+      await ext.storage.local.set({ running: true, runManualTrigger: !!msg.manual });
+      const tab = await ext.tabs.create({ url: pageUrl(), active: false });
+      await ext.storage.local.set({ automationTabId: tab.id });
+    })()
+      .then(() => sendResponse({ ok: true }))
+      .catch((err) => sendResponse({ ok: false, message: err.message }));
+    return true;
+  }
   if (msg?.type === 'EXECUTE_BACKEND_NOW') {
     executeDirectBackendRun(true)
       .then((res) => {
@@ -230,41 +241,33 @@ ext.alarms.onAlarm.addListener(async (alarm) => {
   if (stored.historyMonth && stored.historyMonth !== month) {
     await ext.storage.local.set({ monthHistory: [], historyMonth: month });
   }
-  if (p.weekday !== 'Thu') return;
+  if (p.weekday !== 'Tue') return;
   const [hh, mm] = (settings.runAt || '09:05').split(':').map(Number);
   const nowMin = Number(p.hour) * 60 + Number(p.minute);
   const target = hh * 60 + mm;
   if (nowMin < 9 * 60 || nowMin > 23 * 60 || nowMin < target) return;
 
-  const key = thursdayDateKey(p);
-  const { lastAttemptThursday } = await ext.storage.local.get('lastAttemptThursday');
-  if (lastAttemptThursday === key) return;
+  const key = scheduleDateKey(p);
+  const { lastAttemptTuesday } = await ext.storage.local.get('lastAttemptTuesday');
+  if (lastAttemptTuesday === key) return;
 
   // Mark before executing so repeated alarm ticks cannot launch duplicate runs.
-  await ext.storage.local.set({ lastAttemptThursday: key, running: true });
-
-  if (apiTemplate?.url) {
-    try {
-      await executeDirectBackendRun(false);
-    } catch (e) {
-      await recordRunFinished({
-        status: 'error',
-        message: e.message,
-        mode: 'scheduled_direct',
-      });
-    }
-  } else {
-    const tab = await ext.tabs.create({ url: pageUrl(settings), active: false });
-    await ext.storage.local.set({ automationTabId: tab.id });
-  }
+  await ext.storage.local.set({ lastAttemptTuesday: key, running: true, runManualTrigger: false });
+  const tab = await ext.tabs.create({ url: pageUrl(), active: false });
+  await ext.storage.local.set({ automationTabId: tab.id });
 });
 
 ext.tabs.onUpdated.addListener(async (tabId, change) => {
   if (change.status !== 'complete') return;
-  const { automationTabId } = await ext.storage.local.get('automationTabId');
+  const { automationTabId, runManualTrigger = false } = await ext.storage.local.get([
+    'automationTabId',
+    'runManualTrigger',
+  ]);
   if (tabId !== automationTabId) return;
   try {
-    await ext.tabs.sendMessage(tabId, { type: 'START_AUTOPASS' });
+    await ext.tabs.sendMessage(tabId, {
+      type: runManualTrigger ? 'RUN_MANUAL' : 'START_AUTOPASS',
+    });
   } catch {
     await closeAutomationTab();
     await ext.storage.local.set({

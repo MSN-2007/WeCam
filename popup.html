@@ -28,32 +28,18 @@
     <label class="toggle">
       <span>
         <b>Automation enabled</b>
-        <small>Scheduled run on Thursday; manual run available anytime</small>
+        <small>Scheduled run on Tuesday; manual run available anytime</small>
       </span>
       <input id="enabled" type="checkbox">
     </label>
 
     <section>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <h2>Execution mode</h2>
-        <span id="modeBadge" class="mode-badge ui">UI Automation</span>
-      </div>
-      <small id="modeDesc">Direct backend API will automatically activate as soon as you submit or view a leave form on CAMU.</small>
-    </section>
-
-    <section>
-      <h2>Thursday schedule</h2>
+      <h2>Tuesday schedule</h2>
       <label>
         Start time (9:00 AM–11:00 PM)
         <input id="runAt" type="time" min="09:00" max="23:00" value="09:05">
       </label>
-      <label>
-        CAMU page version
-        <select id="pageVersion">
-          <option value="v2">v2 (student.camu.in/v2/leaveManagement)</option>
-          <option value="v1">v1 (student.camu.in/v1/leaveManagement)</option>
-        </select>
-      </label>
+
     </section>
 
     <section>
@@ -84,7 +70,7 @@
     <button id="save">Save settings</button>
     <button id="test" class="secondary">Test page detection (no submission)</button>
     <output id="status"></output>
-    <footer>CAMU login must be active. Direct native mode executes silently in the background without opening tabs. If uncalibrated, falls back to tab automation (v1 or v2). CAMU may reject submissions outside its Thursday 09:00–23:00 application window.</footer>
+    <footer>CAMU login must be active. The extension runs silently in the background (active: false), fills and submits the leave requests, and closes the tab automatically without user interruption.</footer>
   </main>
   <script type="module" src="popup.js"></script>
 </body>

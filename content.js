@@ -883,8 +883,8 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
             return o;
           }, {});
         const minute = Number(p.hour) * 60 + Number(p.minute);
-        if (p.weekday !== 'Thu' || minute < 540 || minute > 1380) {
-          throw new Error('Outside the permitted Thursday 09:00–23:00 window.');
+        if (p.weekday !== 'Tue' || minute < 540 || minute > 1380) {
+          throw new Error('Outside the permitted Tuesday 09:00–23:00 window.');
         }
       }
       const dates = upcomingWeekend();
@@ -937,11 +937,11 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     }
     if (msg?.type === 'DETECT_ONLY') {
       detectOnly().then((r) => {
-        const onTarget = /^\/v[12]\/leaveManagement/.test(location.pathname);
+        const onTarget = /^\/v2\/leaveManagement/.test(location.pathname);
         sendResponse({
           message: onTarget
             ? 'Detection: ' + JSON.stringify(r)
-            : 'Wrong CAMU page. Open https://student.camu.in/v1/leaveManagement or https://student.camu.in/v2/leaveManagement and run detection again. Current page: ' +
+            : 'Wrong CAMU page. Open https://student.camu.in/v2/leaveManagement and run detection again. Current page: ' +
               location.href,
         });
       });
