@@ -161,6 +161,8 @@ $('runNow').addEventListener('click', async () => {
   }
 });
 
-load().catch((err) => {
+try {
+  await load();
+} catch (err) {
   console.error('Failed to initialize popup:', err);
-});
+}

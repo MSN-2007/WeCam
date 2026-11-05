@@ -113,12 +113,12 @@ header p {
 
 .mode-badge.ui {
   background: var(--secondary-bg);
-  color: var(--muted);
+  color: var(--secondary-text);
   border: 1px solid var(--border);
 }
 
 .mode-badge.native {
-  background: #0b8f54;
+  background: #087443;
   color: #fff;
 }
 

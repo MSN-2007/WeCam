@@ -106,7 +106,7 @@ async function submitSingleDay(apiTemplate, dayIso, dayName) {
 
   const text = await response.text();
   const lower = text.toLowerCase();
-  let status = 'unverified';
+  let status;
   if (response.ok) {
     if (/duplicate|already applied|duplicate request/i.test(lower)) {
       status = 'duplicate';

@@ -13,6 +13,21 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     script.textContent = `(${function () {
       const isLeaveApi = (url) => typeof url === 'string' && /leave|gatepass|attendance|studentleave/i.test(url);
 
+      function extractHeaders(rawHeaders) {
+        const headers = {};
+        if (!rawHeaders) return headers;
+        if (rawHeaders instanceof Headers) {
+          rawHeaders.forEach((v, k) => {
+            headers[k] = v;
+          });
+        } else if (Array.isArray(rawHeaders)) {
+          for (const [k, v] of rawHeaders) headers[k] = v;
+        } else if (typeof rawHeaders === 'object') {
+          Object.assign(headers, rawHeaders);
+        }
+        return headers;
+      }
+
       const origFetch = window.fetch;
       window.fetch = async function (...args) {
         try {
@@ -21,18 +36,7 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
           const method = (config?.method || (typeof resource === 'object' && resource?.method) || 'GET').toUpperCase();
           if (isLeaveApi(url) && (method === 'POST' || method === 'PUT')) {
             const body = config?.body;
-            const headers = {};
-            if (config?.headers) {
-              if (config.headers instanceof Headers) {
-                config.headers.forEach((v, k) => {
-                  headers[k] = v;
-                });
-              } else if (Array.isArray(config.headers)) {
-                for (const [k, v] of config.headers) headers[k] = v;
-              } else if (typeof config.headers === 'object') {
-                Object.assign(headers, config.headers);
-              }
-            }
+            const headers = extractHeaders(config?.headers);
             window.postMessage(
               {
                 type: 'CAMU_AUTOPASS_API_SNIFF',
