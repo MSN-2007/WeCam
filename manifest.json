@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "CAMU AutoPass – V3.4",
-  "version": "3.4.0",
-  "description": "CAMU weekend leave and gate-pass automation with preselected React-Select detection and semantic time validation and Thursday scheduling.",
+  "name": "CAMU AutoPass – V3.5",
+  "version": "3.5.0",
+  "description": "Cross-browser CAMU weekend leave and gate-pass automation (Chrome & Firefox) with React-Select detection, semantic time validation, and Thursday scheduling.",
   "permissions": [
     "alarms",
     "storage",
@@ -13,11 +13,25 @@
     "https://student.camu.in/*"
   ],
   "background": {
+    "scripts": [
+      "background.js"
+    ],
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup.html",
     "default_title": "CAMU AutoPass"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "camu-autopass@wecam.addon",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
   },
   "content_scripts": [
     {
