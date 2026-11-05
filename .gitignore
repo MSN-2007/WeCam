@@ -1,0 +1,12 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build & packaging artifacts
+web-ext-artifacts/
+*.zip
+*.xpi
+
+# Node
+node_modules/
+package-lock.json

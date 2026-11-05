@@ -1,4 +1,5 @@
 if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) { /* already injected */ } else { window.__CAMU_AUTOPASS_CONTENT_LOADED__ = true;
+const ext = typeof browser !== 'undefined' ? browser : chrome;
 /* CAMU DOM adapter. Selector/label matching is intentionally isolated here so it can be updated if CAMU changes. */
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const norm=s=>(s||'').replace(/\s+/g,' ').trim().toLowerCase();
@@ -8,7 +9,7 @@ function findButton(words){return [...document.querySelectorAll('button,a,[role=
 function findLabel(label){const labels=[...document.querySelectorAll('label')].filter(e=>visible(e)&&textOf(e).includes(norm(label)));for(const l of labels){if(l.control)return l.control;const id=l.getAttribute('for');if(id){const el=document.getElementById(id);if(el)return el;}const nested=l.querySelector('input,select,textarea');if(nested)return nested;const parent=l.parentElement?.querySelector('input,select,textarea');if(parent)return parent;}return null;}
 function findByPlaceholder(words){return [...document.querySelectorAll('input,textarea')].find(e=>visible(e)&&words.some(w=>norm(e.placeholder).includes(norm(w))));}
 function setValue(el,value){if(!el)throw new Error('Could not find field: '+value);const proto=el.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:el.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype;const setter=Object.getOwnPropertyDescriptor(proto,'value')?.set;if(setter)setter.call(el,value);else el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));}
-function labelElement(label){return [...document.querySelectorAll('label,[data-label],.form-label')].find(e=>visible(e)&&norm(textOf(e)).replace(/[＊*]/g,'').includes(norm(label)));}
+function labelElement(label){return [...document.querySelectorAll('label,[data-label],.form-label')].find(e=>visible(e)&&norm(textOf(e)).replace(/[\uff0a*]/g,'').includes(norm(label)));}
 function findCustomControl(label){
  const l=labelElement(label);if(!l)return null;if(l.control)return l.control;
  const id=l.getAttribute('for');if(id){const e=document.getElementById(id);if(e)return e;}
@@ -279,15 +280,15 @@ async function startAutoPass(manual=false){
  if(autoPassRunning)throw new Error('An AutoPass run is already in progress in this tab.');
  autoPassRunning=true;
  try{
-  const {settings={}}=await chrome.storage.local.get('settings');
+  const {settings={}}=await ext.storage.local.get('settings');
   if(!manual){
    const p=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Kolkata',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).reduce((o,x)=>(o[x.type]=x.value,o),{});
    const minute=Number(p.hour)*60+Number(p.minute);
    if(p.weekday!=='Thu'||minute<540||minute>1380)throw new Error('Outside the permitted Thursday 09:00–23:00 window.');
   }
   const dates=upcomingWeekend(),names=['Friday','Saturday','Sunday'],results=[];
-  for(let i=0;i<3;i++){results.push(await fillAndSubmit(dates[i],settings,names[i]));await chrome.storage.local.set({currentExecution:results});}
-  await chrome.runtime.sendMessage({type:'RUN_FINISHED',result:{status:results.every(x=>['submitted','duplicate'].includes(x.status))?'complete':'needs_attention',results,mode:manual?'manual':'scheduled'}});
+  for(let i=0;i<3;i++){results.push(await fillAndSubmit(dates[i],settings,names[i]));await ext.storage.local.set({currentExecution:results});}
+  await ext.runtime.sendMessage({type:'RUN_FINISHED',result:{status:results.every(x=>['submitted','duplicate'].includes(x.status))?'complete':'needs_attention',results,mode:manual?'manual':'scheduled'}});
   return results;
  }finally{autoPassRunning=false;}
 }
@@ -315,7 +316,7 @@ async function diagnoseTimePicker(){
  return {url:location.href,at:new Date().toISOString(),note:'Diagnostic only: no form values were entered and nothing was saved.',fields};
 }
 
-chrome.runtime.onMessage.addListener((msg,sender,sendResponse)=>{
+ext.runtime.onMessage.addListener((msg,sender,sendResponse)=>{
  if(msg?.type==='PING'){sendResponse({ok:true});return;}
  if(msg?.type==='DIAGNOSE_TIME_PICKER'){
   diagnoseTimePicker().then(r=>sendResponse({ok:true,report:r})).catch(e=>sendResponse({ok:false,message:e.message}));return true;
@@ -326,7 +327,7 @@ chrome.runtime.onMessage.addListener((msg,sender,sendResponse)=>{
  if(msg?.type==='START_AUTOPASS'||msg?.type==='RUN_MANUAL'){
   const manual=msg.type==='RUN_MANUAL';
   startAutoPass(manual).then(results=>sendResponse({ok:true,message:`Run completed. ${results.length} daily applications processed; check the CAMU page and monthly activity.`})).catch(async e=>{
-   await chrome.runtime.sendMessage({type:'RUN_FINISHED',result:{status:'error',message:e.message,mode:manual?'manual':'scheduled'}});
+   await ext.runtime.sendMessage({type:'RUN_FINISHED',result:{status:'error',message:e.message,mode:manual?'manual':'scheduled'}});
    sendResponse({ok:false,message:e.message});
   });return true;
  }
