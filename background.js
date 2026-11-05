@@ -36,6 +36,144 @@ async function ensureAlarm() {
 ext.runtime.onInstalled.addListener(ensureAlarm);
 ext.runtime.onStartup.addListener(ensureAlarm);
 
+function upcomingWeekendDates() {
+  const weekday = new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short' }).format(new Date());
+  const dayMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  const today = dayMap[weekday] ?? 0;
+  const delta = (5 - today + 7) % 7 || 7;
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+    .format(new Date())
+    .split('-')
+    .map(Number);
+  const base = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+  base.setUTCDate(base.getUTCDate() + delta);
+  return [0, 1, 2].map((n) => {
+    const x = new Date(base);
+    x.setUTCDate(x.getUTCDate() + n);
+    return `${x.getUTCFullYear()}-${String(x.getUTCMonth() + 1).padStart(2, '0')}-${String(x.getUTCDate()).padStart(2, '0')}`;
+  });
+}
+
+function substitutePayloadDates(rawBody, dayIso) {
+  if (!rawBody) return rawBody;
+  const [y, m, d] = dayIso.split('-');
+  const mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(m) - 1];
+  const dMonY = `${d}-${mon}-${y}`;
+  const dMY = `${d}/${m}/${y}`;
+
+  try {
+    const parsed = JSON.parse(rawBody);
+    const replaceInObj = (obj) => {
+      if (!obj || typeof obj !== 'object') return obj;
+      for (const [k, v] of Object.entries(obj)) {
+        if (typeof v === 'string') {
+          if (/^\d{4}-\d{2}-\d{2}/.test(v)) obj[k] = v.replace(/^\d{4}-\d{2}-\d{2}/, dayIso);
+          else if (/^\d{2}-[A-Za-z]{3}-\d{4}/.test(v)) obj[k] = v.replace(/^\d{2}-[A-Za-z]{3}-\d{4}/, dMonY);
+          else if (/^\d{2}\/\d{2}\/\d{4}/.test(v)) obj[k] = v.replace(/^\d{2}\/\d{2}\/\d{4}/, dMY);
+        } else if (typeof v === 'object') {
+          replaceInObj(v);
+        }
+      }
+      return obj;
+    };
+    return JSON.stringify(replaceInObj(parsed));
+  } catch {
+    // Fall back to regex replacement if rawBody is not valid JSON
+    return rawBody
+      .replace(/\d{4}-\d{2}-\d{2}/g, dayIso)
+      .replace(/\d{2}-[A-Za-z]{3}-\d{4}/g, dMonY)
+      .replace(/\d{2}\/\d{2}\/\d{4}/g, dMY);
+  }
+}
+
+async function submitSingleDay(apiTemplate, dayIso, dayName) {
+  const body = substitutePayloadDates(apiTemplate.body, dayIso);
+  const headers = { ...apiTemplate.headers };
+  delete headers['content-length'];
+  delete headers['host'];
+
+  const response = await fetch(apiTemplate.url, {
+    method: apiTemplate.method || 'POST',
+    headers,
+    body: body || undefined,
+    credentials: 'include',
+  });
+
+  const text = await response.text();
+  const lower = text.toLowerCase();
+  let status = 'unverified';
+  if (response.ok) {
+    if (/duplicate|already applied|duplicate request/i.test(lower)) {
+      status = 'duplicate';
+    } else {
+      status = 'submitted';
+    }
+  } else if (/duplicate/i.test(lower)) {
+    status = 'duplicate';
+  } else {
+    status = 'failed';
+  }
+
+  return { day: dayName, date: dayIso, status };
+}
+
+async function recordRunFinished(result) {
+  const now = new Date();
+  const month = new Intl.DateTimeFormat('en-CA', {
+    timeZone: TZ,
+    year: 'numeric',
+    month: '2-digit',
+  })
+    .format(now)
+    .slice(0, 7);
+  const { monthHistory = [], historyMonth = '' } = await ext.storage.local.get([
+    'monthHistory',
+    'historyMonth',
+  ]);
+  const history = historyMonth === month ? monthHistory : [];
+  const entries = (result.results || []).map((x) => ({
+    label: `${x.day || 'Application'} – ${x.date || ''}`,
+    status: x.status || result.status || 'unknown',
+  }));
+  if (!entries.length) entries.push({ label: 'Automation run', status: result.status || 'error' });
+  await ext.storage.local.set({
+    lastRunResult: result,
+    running: false,
+    monthHistory: [...history, ...entries],
+    historyMonth: month,
+  });
+}
+
+async function executeDirectBackendRun(manual = false) {
+  const { apiTemplate = null } = await ext.storage.local.get('apiTemplate');
+  if (!apiTemplate?.url) {
+    throw new Error('No captured CAMU API template found. Open CAMU once to capture.');
+  }
+
+  const dates = upcomingWeekendDates();
+  const names = ['Friday', 'Saturday', 'Sunday'];
+
+  const r1 = await submitSingleDay(apiTemplate, dates[0], names[0]);
+  const r2 = await submitSingleDay(apiTemplate, dates[1], names[1]);
+  const r3 = await submitSingleDay(apiTemplate, dates[2], names[2]);
+  const results = [r1, r2, r3];
+
+  const allSuccess = results.every((x) => ['submitted', 'duplicate'].includes(x.status));
+  const runResult = {
+    status: allSuccess ? 'complete' : 'needs_attention',
+    results,
+    mode: manual ? 'manual_direct' : 'scheduled_direct',
+  };
+
+  await recordRunFinished(runResult);
+  return runResult;
+}
+
 ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg?.type === 'RESCHEDULE') {
     ensureAlarm().catch((err) => {
@@ -44,34 +182,25 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ ok: true });
     return true;
   }
-  if (msg?.type === 'RUN_FINISHED') {
-    (async () => {
-      const now = new Date();
-      const month = new Intl.DateTimeFormat('en-CA', {
-        timeZone: TZ,
-        year: 'numeric',
-        month: '2-digit',
+  if (msg?.type === 'API_TEMPLATE_CAPTURED') {
+    ext.storage.local.set({ apiTemplate: msg.template }).catch((err) => {
+      console.error('Failed to save API template:', err);
+    });
+    sendResponse({ ok: true });
+    return true;
+  }
+  if (msg?.type === 'EXECUTE_BACKEND_NOW') {
+    executeDirectBackendRun(true)
+      .then((res) => {
+        sendResponse({ ok: true, message: `${res.results.length} submissions processed directly.` });
       })
-        .format(now)
-        .slice(0, 7);
-      const { monthHistory = [], historyMonth = '' } = await ext.storage.local.get([
-        'monthHistory',
-        'historyMonth',
-      ]);
-      const history = historyMonth === month ? monthHistory : [];
-      const result = msg.result || {};
-      const entries = (result.results || []).map((x) => ({
-        label: `${x.day || 'Application'} \u2013 ${x.date || ''}`,
-        status: x.status || result.status || 'unknown',
-      }));
-      if (!entries.length) entries.push({ label: 'Automation run', status: result.status || 'error' });
-      await ext.storage.local.set({
-        lastRunResult: result,
-        running: false,
-        monthHistory: [...history, ...entries],
-        historyMonth: month,
+      .catch((err) => {
+        sendResponse({ ok: false, message: err.message });
       });
-    })().catch((err) => {
+    return true;
+  }
+  if (msg?.type === 'RUN_FINISHED') {
+    recordRunFinished(msg.result || {}).catch((err) => {
       console.error('Failed to update run history:', err);
     });
     sendResponse({ ok: true });
@@ -81,7 +210,11 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 ext.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name !== ALARM) return;
-  const { settings = {}, running = false } = await ext.storage.local.get(['settings', 'running']);
+  const { settings = {}, running = false, apiTemplate = null } = await ext.storage.local.get([
+    'settings',
+    'running',
+    'apiTemplate',
+  ]);
   if (!settings.enabled || running) return;
   const p = localParts();
   const month = `${p.year}-${p.month}`;
@@ -99,19 +232,32 @@ ext.alarms.onAlarm.addListener(async (alarm) => {
   const { lastAttemptThursday } = await ext.storage.local.get('lastAttemptThursday');
   if (lastAttemptThursday === key) return;
 
-  // Mark before opening so repeated alarm ticks cannot launch duplicate runs.
+  // Mark before executing so repeated alarm ticks cannot launch duplicate runs.
   await ext.storage.local.set({ lastAttemptThursday: key, running: true });
-  const tab = await ext.tabs.create({ url: pageUrl(settings), active: false });
-  await ext.storage.local.set({ automationTabId: tab.id });
+
+  if (apiTemplate?.url) {
+    try {
+      await executeDirectBackendRun(false);
+    } catch (e) {
+      await recordRunFinished({
+        status: 'error',
+        message: e.message,
+        mode: 'scheduled_direct',
+      });
+    }
+  } else {
+    const tab = await ext.tabs.create({ url: pageUrl(settings), active: false });
+    await ext.storage.local.set({ automationTabId: tab.id });
+  }
 });
 
-ext.tabs.onUpdated.addListener(async (tabId, change, tab) => {
+ext.tabs.onUpdated.addListener(async (tabId, change) => {
   if (change.status !== 'complete') return;
   const { automationTabId } = await ext.storage.local.get('automationTabId');
   if (tabId !== automationTabId) return;
   try {
     await ext.tabs.sendMessage(tabId, { type: 'START_AUTOPASS' });
-  } catch (e) {
+  } catch {
     await ext.storage.local.set({
       running: false,
       lastRunResult: {

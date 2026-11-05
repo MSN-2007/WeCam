@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,8 +17,8 @@
         <label class="theme-control" for="theme">
           Theme
           <select id="theme" aria-label="Choose theme">
-            <option value="light">Light</option>
             <option value="dark">Dark</option>
+            <option value="light">Light</option>
           </select>
         </label>
         <span class="pill">V3.5</span>
@@ -32,6 +32,14 @@
       </span>
       <input id="enabled" type="checkbox">
     </label>
+
+    <section>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h2>Execution mode</h2>
+        <span id="modeBadge" class="mode-badge ui">UI Automation</span>
+      </div>
+      <small id="modeDesc">Direct backend API will automatically activate as soon as you submit or view a leave form on CAMU.</small>
+    </section>
 
     <section>
       <h2>Thursday schedule</h2>
@@ -75,8 +83,8 @@
     <button id="runNow" class="run-now">Run now — fill and submit</button>
     <button id="save">Save settings</button>
     <button id="test" class="secondary">Test page detection (no submission)</button>
-    <p id="status" role="status"></p>
-    <footer>CAMU login must be active. Manual Run Now starts immediately on the open Leave Management tab (v1 or v2). CAMU may reject submissions outside its Thursday 09:00–23:00 application window.</footer>
+    <output id="status"></output>
+    <footer>CAMU login must be active. Direct native mode executes silently in the background without opening tabs. If uncalibrated, falls back to tab automation (v1 or v2). CAMU may reject submissions outside its Thursday 09:00–23:00 application window.</footer>
   </main>
   <script src="popup.js"></script>
 </body>

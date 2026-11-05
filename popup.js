@@ -10,7 +10,7 @@ function isCamuLeavePage(url) {
 }
 
 function applyTheme(theme) {
-  const selected = theme === 'dark' ? 'dark' : 'light';
+  const selected = theme === 'light' ? 'light' : 'dark';
   document.documentElement.dataset.theme = selected;
   $('theme').value = selected;
 }
@@ -23,17 +23,31 @@ $('theme').addEventListener('change', async () => {
 });
 
 async function load() {
-  const { settings = {}, monthHistory = [], historyMonth = '' } = await ext.storage.local.get([
+  const { settings = {}, monthHistory = [], historyMonth = '', apiTemplate = null } = await ext.storage.local.get([
     'settings',
     'monthHistory',
     'historyMonth',
+    'apiTemplate',
   ]);
-  applyTheme(settings.theme || 'light');
+  applyTheme(settings.theme || 'dark');
   $('enabled').checked = !!settings.enabled;
   $('runAt').value = settings.runAt || '09:05';
   $('pageVersion').value = settings.pageVersion || 'v2';
   $('fromTime').value = settings.fromTime || '06:00';
   $('toTime').value = settings.toTime || '20:00';
+
+  const badge = $('modeBadge');
+  const desc = $('modeDesc');
+  if (apiTemplate?.url) {
+    badge.textContent = 'Native Backend (Direct)';
+    badge.className = 'mode-badge native';
+    desc.textContent = 'Active: Executes natively in the background without opening browser tabs.';
+  } else {
+    badge.textContent = 'UI Automation';
+    badge.className = 'mode-badge ui';
+    desc.textContent = 'Direct backend API will automatically activate as soon as you submit or view a leave form on CAMU.';
+  }
+
   const month = new Date().toISOString().slice(0, 7);
   const rows = historyMonth === month ? monthHistory : [];
   const historyEl = $('history');
@@ -107,15 +121,28 @@ $('test').addEventListener('click', async () => {
 $('runNow').addEventListener('click', async () => {
   const button = $('runNow');
   button.disabled = true;
-  $('status').textContent = 'Connecting to CAMU…';
+  $('status').textContent = 'Checking execution mode…';
   try {
+    const { settings = {}, apiTemplate = null } = await ext.storage.local.get(['settings', 'apiTemplate']);
+    if (apiTemplate?.url) {
+      $('status').textContent = 'Submitting weekend leave requests directly via native API…';
+      const res = await ext.runtime.sendMessage({ type: 'EXECUTE_BACKEND_NOW' });
+      if (res?.ok) {
+        $('status').textContent = 'Direct backend submission completed: ' + res.message;
+        await load();
+      } else {
+        $('status').textContent = 'Backend submission error: ' + (res?.message || 'unknown error');
+      }
+      return;
+    }
+
+    $('status').textContent = 'Connecting to CAMU tab…';
     const [tab] = await ext.tabs.query({ active: true, lastFocusedWindow: true });
     if (!tab?.id || !isCamuLeavePage(tab.url)) {
       $('status').textContent =
         'Open the CAMU Leave Management page (v1 or v2) in the active tab, then click Run now.';
       return;
     }
-    const { settings = {} } = await ext.storage.local.get('settings');
     await ext.storage.local.set({
       settings: {
         ...settings,
@@ -134,4 +161,6 @@ $('runNow').addEventListener('click', async () => {
   }
 });
 
-load();
+load().catch((err) => {
+  console.error('Failed to initialize popup:', err);
+});

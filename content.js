@@ -5,13 +5,123 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
 
   const ext = typeof browser !== 'undefined' ? browser : chrome;
 
-  /* ─── CAMU DOM Adapter ──────────────────────────────────────────────────────
+  // ─── API Sniffer / Request Interceptor ─────────────────────────────
+  // Intercepts CAMU's leave & gate-pass API requests to allow silent
+  // native backend execution without browser tabs.
+  function injectApiSniffer() {
+    const script = document.createElement('script');
+    script.textContent = `(${function () {
+      const isLeaveApi = (url) => typeof url === 'string' && /leave|gatepass|attendance|studentleave/i.test(url);
+
+      const origFetch = window.fetch;
+      window.fetch = async function (...args) {
+        try {
+          const [resource, config] = args;
+          const url = typeof resource === 'string' ? resource : resource?.url;
+          const method = (config?.method || (typeof resource === 'object' && resource?.method) || 'GET').toUpperCase();
+          if (isLeaveApi(url) && (method === 'POST' || method === 'PUT')) {
+            const body = config?.body;
+            const headers = {};
+            if (config?.headers) {
+              if (config.headers instanceof Headers) {
+                config.headers.forEach((v, k) => {
+                  headers[k] = v;
+                });
+              } else if (Array.isArray(config.headers)) {
+                for (const [k, v] of config.headers) headers[k] = v;
+              } else if (typeof config.headers === 'object') {
+                Object.assign(headers, config.headers);
+              }
+            }
+            window.postMessage(
+              {
+                type: 'CAMU_AUTOPASS_API_SNIFF',
+                template: {
+                  url,
+                  method,
+                  headers,
+                  body: typeof body === 'string' ? body : null,
+                  timestamp: Date.now(),
+                },
+              },
+              window.location.origin
+            );
+          }
+        } catch {
+          // Ignore interception errors to avoid interfering with page execution
+        }
+        return origFetch.apply(this, args);
+      };
+
+      const origOpen = XMLHttpRequest.prototype.open;
+      const origSend = XMLHttpRequest.prototype.send;
+      const origSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
+
+      XMLHttpRequest.prototype.open = function (method, url, ...rest) {
+        this.__camu_meta = { method, url, headers: {} };
+        return origOpen.call(this, method, url, ...rest);
+      };
+
+      XMLHttpRequest.prototype.setRequestHeader = function (header, value) {
+        if (this.__camu_meta?.headers) {
+          this.__camu_meta.headers[header] = value;
+        }
+        return origSetRequestHeader.call(this, header, value);
+      };
+
+      XMLHttpRequest.prototype.send = function (body) {
+        try {
+          const meta = this.__camu_meta;
+          if (meta && isLeaveApi(meta.url) && /^(POST|PUT)$/i.test(meta.method)) {
+            window.postMessage(
+              {
+                type: 'CAMU_AUTOPASS_API_SNIFF',
+                template: {
+                  url: meta.url,
+                  method: meta.method.toUpperCase(),
+                  headers: meta.headers,
+                  body: typeof body === 'string' ? body : null,
+                  timestamp: Date.now(),
+                },
+              },
+              window.location.origin
+            );
+          }
+        } catch {
+          // Ignore interception errors to avoid interfering with page execution
+        }
+        return origSend.call(this, body);
+      };
+    }})();`;
+    (document.head || document.documentElement).appendChild(script);
+    script.remove();
+  }
+
+  injectApiSniffer();
+
+  window.addEventListener('message', (event) => {
+    if (
+      event.origin !== window.location.origin ||
+      event.source !== window ||
+      event.data?.type !== 'CAMU_AUTOPASS_API_SNIFF'
+    ) {
+      return;
+    }
+    const template = event.data?.template;
+    if (template?.url) {
+      ext.runtime.sendMessage({ type: 'API_TEMPLATE_CAPTURED', template }).catch(() => {
+        // Ignore runtime messaging errors if background is idle
+      });
+    }
+  });
+
+  /* ─── CAMU DOM Adapter ──────────────────────────────────────────────
    * Selector / label matching is intentionally isolated here so it can be
    * updated if CAMU changes its UI without touching any other file.
    * Supports both CAMU v1 (/v1/leaveManagement) and v2 (/v2/leaveManagement).
-   * ─────────────────────────────────────────────────────────────────────────── */
+   * ─────────────────────────────────────────────────────────────────── */
 
-  // ── Utilities ──────────────────────────────────────────────────────────────
+  // ─── Utilities ──────────────────────────────────────────────────────
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -94,7 +204,7 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     );
   }
 
-  // ── Robust React-Select & Custom Dropdown Handler ──────────────────────────
+  // ─── Robust React-Select & Custom Dropdown Handler ──────────────────
 
   /**
    * Checks whether a value string non-trivially matches any item in wantedList.
@@ -475,7 +585,7 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     return [];
   }
 
-  // ── Core automation ─────────────────────────────────────────────────────────
+  // ─── Core automation ───────────────────────────────────────────────
 
   async function fillAndSubmit(dayIso, settings, dayName) {
     // Only click "Apply Leave and Gate Pass" if form is not already open

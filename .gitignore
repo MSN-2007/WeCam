@@ -5,6 +5,7 @@ Thumbs.db
 
 # Build & packaging artifacts
 web-ext-artifacts/
+dist/
 *.zip
 *.xpi
 
