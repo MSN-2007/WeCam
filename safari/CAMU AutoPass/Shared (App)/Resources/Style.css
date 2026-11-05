@@ -25,6 +25,7 @@ body {
     height: 100%;
 
     font: -apple-system-short-body;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     text-align: center;
 }
 
@@ -37,10 +38,6 @@ body.platform-ios .platform-mac {
 }
 
 body.platform-mac .platform-ios {
-    display: none;
-}
-
-body.platform-ios .platform-mac {
     display: none;
 }
 

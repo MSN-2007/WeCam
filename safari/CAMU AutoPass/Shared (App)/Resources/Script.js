@@ -12,8 +12,7 @@ function show(platform, enabled, useSettingsInsteadOfPreferences) {
         document.body.classList.toggle(`state-on`, enabled);
         document.body.classList.toggle(`state-off`, !enabled);
     } else {
-        document.body.classList.remove(`state-on`);
-        document.body.classList.remove(`state-off`);
+        document.body.classList.remove(`state-on`, `state-off`);
     }
 }
 
