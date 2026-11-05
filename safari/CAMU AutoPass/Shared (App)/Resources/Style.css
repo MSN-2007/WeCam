@@ -24,7 +24,6 @@ body {
     margin: 0 calc(var(--spacing) * 2);
     height: 100%;
 
-    font: -apple-system-short-body;
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     text-align: center;
 }

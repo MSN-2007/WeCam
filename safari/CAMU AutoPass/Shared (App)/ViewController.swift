@@ -36,7 +36,7 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
         self.webView.loadFileURL(Bundle.main.url(forResource: "Main", withExtension: "html")!, allowingReadAccessTo: Bundle.main.resourceURL!)
     }
 
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    func webView(_: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         guard let url = navigationAction.request.url else {
             decisionHandler(.cancel)
             return
@@ -48,11 +48,11 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
         }
     }
 
-    func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
+    func webView(_: WKWebView, didFinish _: WKNavigation!) {
 #if os(iOS)
-        webView.evaluateJavaScript("show('ios')")
+        self.webView.evaluateJavaScript("show('ios')")
 #elseif os(macOS)
-        webView.evaluateJavaScript("show('mac')")
+        self.webView.evaluateJavaScript("show('mac')")
 
         SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionBundleIdentifier) { (state, error) in
             guard let state = state, error == nil else {
@@ -62,9 +62,9 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 
             DispatchQueue.main.async {
                 if #available(macOS 13, *) {
-                    webView.evaluateJavaScript("show('mac', \(state.isEnabled), true)")
+                    self.webView.evaluateJavaScript("show('mac', \(state.isEnabled), true)")
                 } else {
-                    webView.evaluateJavaScript("show('mac', \(state.isEnabled), false)")
+                    self.webView.evaluateJavaScript("show('mac', \(state.isEnabled), false)")
                 }
             }
         }
