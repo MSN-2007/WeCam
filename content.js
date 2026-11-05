@@ -5,13 +5,13 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
 
   const ext = typeof browser !== 'undefined' ? browser : chrome;
 
-  /* ─── CAMU DOM Adapter ──────────────────────────────────────────────────────
+  /* ─── CAMU DOM Adapter ──────────────────────────────────────────────
    * Selector / label matching is intentionally isolated here so it can be
    * updated if CAMU changes its UI without touching any other file.
-   * Supports both CAMU v1 (/v1/leaveManagement) and v2 (/v2/leaveManagement).
-   * ─────────────────────────────────────────────────────────────────────────── */
+   * Supports CAMU v2 (/v2/leaveManagement).
+   * ─────────────────────────────────────────────────────────────────── */
 
-  // ── Utilities ──────────────────────────────────────────────────────────────
+  // ─── Utilities ──────────────────────────────────────────────────────
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -94,7 +94,7 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     );
   }
 
-  // ── Robust React-Select & Custom Dropdown Handler ──────────────────────────
+  // ─── Robust React-Select & Custom Dropdown Handler ──────────────────
 
   /**
    * Checks whether a value string non-trivially matches any item in wantedList.
@@ -475,7 +475,7 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     return [];
   }
 
-  // ── Core automation ─────────────────────────────────────────────────────────
+  // ─── Core automation ───────────────────────────────────────────────
 
   async function fillAndSubmit(dayIso, settings, dayName) {
     // Only click "Apply Leave and Gate Pass" if form is not already open
@@ -572,7 +572,7 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
 
       const root = el.closest('.rdt');
       if (!root) {
-        // In CAMU v1 or standard input fields, react-datetime wrapper (.rdt) is not present.
+        // In standard input fields or if react-datetime wrapper (.rdt) is not present.
         const timeFormatted = fmt(clock);
         setValue(el, timeFormatted);
         el.dispatchEvent(new Event('blur', { bubbles: true }));
@@ -767,8 +767,8 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
             return o;
           }, {});
         const minute = Number(p.hour) * 60 + Number(p.minute);
-        if (p.weekday !== 'Thu' || minute < 540 || minute > 1380) {
-          throw new Error('Outside the permitted Thursday 09:00–23:00 window.');
+        if (p.weekday !== 'Tue' || minute < 540 || minute > 1380) {
+          throw new Error('Outside the permitted Tuesday 09:00–23:00 window.');
         }
       }
       const dates = upcomingWeekend();
@@ -821,11 +821,11 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     }
     if (msg?.type === 'DETECT_ONLY') {
       detectOnly().then((r) => {
-        const onTarget = /^\/v[12]\/leaveManagement/.test(location.pathname);
+        const onTarget = location.pathname.startsWith('/v2/leaveManagement');
         sendResponse({
           message: onTarget
             ? 'Detection: ' + JSON.stringify(r)
-            : 'Wrong CAMU page. Open https://student.camu.in/v1/leaveManagement or https://student.camu.in/v2/leaveManagement and run detection again. Current page: ' +
+            : 'Wrong CAMU page. Open https://student.camu.in/v2/leaveManagement and run detection again. Current page: ' +
               location.href,
         });
       });

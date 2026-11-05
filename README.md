@@ -1,6 +1,6 @@
-# CAMU AutoPass – Version 1 (V3.5)
+# CAMU AutoPass – Version 1 (V3.6)
 
-A cross-browser Manifest V3 extension (Chrome, Firefox, Safari, and Chromium/Gecko/WebKit-based browsers) for Thursday-only automation of **three separate daily applications** (Friday, Saturday, Sunday). Each daily form includes the Weekend leave and the integrated Weekend gate pass, so the expected total is **three form submissions**, not six.
+A cross-browser Manifest V3 extension (Chrome, Firefox, Safari, and Chromium/Gecko/WebKit-based browsers) for Tuesday-only automation of **three separate daily applications** (Friday, Saturday, Sunday). Each daily form includes the Weekend leave and the integrated Weekend gate pass, so the expected total is **three form submissions**, not six.
 
 ---
 
@@ -10,7 +10,10 @@ You can download the pre-packaged extension ZIP directly from the GitHub Release
 
 | Release | Compatibility | Direct Download |
 | :--- | :--- | :--- |
-| **v3.5.0 (Latest)** | **Chrome, Firefox & Safari** (Cross-Browser MV3) | [Download camu-autopass-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-v3.5.0.zip) |
+| **v3.6.0 (Chrome)** | **Chrome, Edge, Brave, Opera** (Native Backend Connect & Auto-Close) | [Download camu-autopass-chrome-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-chrome-v3.6.0.zip) |
+| **v3.6.0 (Firefox)** | **Firefox, Zen, LibreWolf, Floorp** (Gecko MV3) | [Download camu-autopass-firefox-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-firefox-v3.6.0.zip) |
+| **v3.6.0 (Universal)** | **All Browsers** (Chrome, Firefox, Safari) | [Download camu-autopass-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-v3.6.0.zip) |
+| **v3.5.0 (Cross-Browser)** | **Chrome, Firefox, Safari** (Pre-Native Connect) | [Download camu-autopass-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-v3.5.0.zip) |
 | **v3.4.0 (Pre-Firefox)** | **Chrome only** (Original MV3) | [Download camu-autopass-v3.4.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.4.0/camu-autopass-v3.4.0.zip) |
 
 All releases with changelogs and assets are available on the [GitHub Releases page](https://github.com/Rish3666/WeCam/releases) (and upstream [MSN-2007/WeCam Releases](https://github.com/MSN-2007/WeCam/releases)).
@@ -19,9 +22,9 @@ All releases with changelogs and assets are available on the [GitHub Releases pa
 
 ## Defaults
 - Time zone: Asia/Kolkata
-- Allowed execution day/window: Thursday, 09:00–23:00
-- Scheduler default: Thursday 09:05
-- Supported CAMU page versions: **v1** (`https://student.camu.in/v1/leaveManagement`) and **v2** (`https://student.camu.in/v2/leaveManagement`) (selectable in settings; default v2)
+- Allowed execution day/window: Tuesday, 09:00–23:00
+- Scheduler default: Tuesday 09:05
+- Supported CAMU page version: **v2** (`https://student.camu.in/v2/leaveManagement`)
 - Daily leave and gate-pass timing: 06:00–20:00 (same day for each application)
 - Leave type: Leave (fixed; CAMU dropdown option)
 - Gate pass type: Weekend (`Week End Gate Pass` / `Weekend`)
@@ -69,7 +72,7 @@ Safari uses Apple's native App Extension wrapper. A pre-configured Xcode project
 
 ---
 
-The browser must be running and the computer awake during the Thursday execution window for scheduled runs. The extension also includes a **Run now** button: open either CAMU Leave Management page (v1 or v2), then click Run now to start the same three-day workflow immediately. Manual runs calculate the next full Friday–Sunday weekend.
+The browser must be running and the computer awake during the Tuesday execution window for scheduled runs. The extension also includes a **Run now** button: click Run now anytime to trigger silent background automation to start the same three-day workflow immediately. Manual runs calculate the next full Friday–Sunday weekend.
 
 ## Important: CAMU selector calibration & multi-version support
 The extension supports both CAMU portal versions:
@@ -78,10 +81,10 @@ The extension supports both CAMU portal versions:
 
 Before enabling automatic Save, navigate to your institution's Leave Management page (v1 or v2), choose the matching **CAMU page version** in the extension popup, use the **Test page detection** button, and inspect `content.js` if any field is not detected. The DOM adapter supports both standard native inputs and modern React-Select / react-datetime widgets.
 
-Important: CAMU is understood to accept applications only Thursday 09:00–23:00. Run now bypasses the extension scheduler restriction, but it cannot bypass CAMU server-side restrictions; if clicked outside CAMU’s permitted window, CAMU may reject the application. Use it during the Thursday window for actual submissions. The extension does not store your CAMU password, bypass authentication, or bypass CAPTCHA/MFA. It relies on your existing logged-in session. It clicks Save automatically after filling the form. Test with automation disabled first.
+Important: CAMU is understood to accept applications only Thursday 09:00–23:00. Run now bypasses the extension scheduler restriction, but it cannot bypass CAMU server-side restrictions; if clicked outside CAMU’s permitted window, CAMU may reject the application. Use it during the Tuesday window for actual submissions. The extension does not store your CAMU password, bypass authentication, or bypass CAPTCHA/MFA. It relies on your existing logged-in session. It clicks Save automatically after filling the form. Test with automation disabled first.
 
 ## Scheduling notes
-Alarms are not exact-to-the-minute guarantees. The worker checks every minute and starts at/after the configured time, but only on Thursday and only before 23:00 Asia/Kolkata. If the browser is closed or the laptop is asleep, automation cannot run. A missed Thursday is not replayed on Friday.
+Alarms are not exact-to-the-minute guarantees. The worker checks every minute and starts at/after the configured time, but only on Tuesday and only before 23:00 Asia/Kolkata. If the browser is closed or the laptop is asleep, automation cannot run. A missed Tuesday is not replayed.
 
 ## Monthly activity
 Stores the latest run result and current execution state in extension storage. Monthly history is displayed in the popup.

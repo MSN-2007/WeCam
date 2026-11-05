@@ -103,6 +103,25 @@ header p {
   font-weight: 700;
 }
 
+.mode-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+}
+
+.mode-badge.ui {
+  background: var(--secondary-bg);
+  color: var(--secondary-text);
+  border: 1px solid var(--border);
+}
+
+.mode-badge.native {
+  background: #087443;
+  color: #fff;
+}
+
 section,
 .toggle {
   background: var(--surface);
