@@ -1,0 +1,34 @@
+name: Release Extension Package
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build extension zip
+        id: package
+        run: |
+          VERSION="${GITHUB_REF_NAME:-v$(jq -r .version manifest.json)}"
+          ZIP_NAME="camu-autopass-${VERSION}.zip"
+          zip -r "$ZIP_NAME" manifest.json background.js content.js popup.html popup.js popup.css README.md
+          echo "zip_name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Attach zip to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'release'
+        with:
+          files: ${{ steps.package.outputs.zip_name }}
+          generate_release_notes: true

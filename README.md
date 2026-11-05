@@ -1,6 +1,21 @@
-# CAMU AutoPass – Version 1
+# CAMU AutoPass – Version 1 (V3.5)
 
 A cross-browser Manifest V3 extension (Chrome, Firefox, and Chromium/Gecko-based browsers) for Thursday-only automation of **three separate daily applications** (Friday, Saturday, Sunday). Each daily form includes the Weekend leave and the integrated Weekend gate pass, so the expected total is **three form submissions**, not six.
+
+---
+
+## 📦 Direct ZIP Downloads (Releases)
+
+You can download the pre-packaged extension ZIP directly from the GitHub Releases page without needing git or Node.js:
+
+| Release | Compatibility | Direct Download |
+| :--- | :--- | :--- |
+| **v3.5.0 (Latest)** | **Chrome & Firefox** (Cross-Browser MV3) | [Download camu-autopass-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-v3.5.0.zip) |
+| **v3.4.0 (Pre-Firefox)** | **Chrome only** (Original MV3) | [Download camu-autopass-v3.4.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.4.0/camu-autopass-v3.4.0.zip) |
+
+All releases with changelogs and assets are available on the [GitHub Releases page](https://github.com/Rish3666/WeCam/releases) (and upstream [MSN-2007/WeCam Releases](https://github.com/MSN-2007/WeCam/releases)).
+
+---
 
 ## Defaults
 - Time zone: Asia/Kolkata
@@ -12,24 +27,28 @@ A cross-browser Manifest V3 extension (Chrome, Firefox, and Chromium/Gecko-based
 - Gate pass reason: Weekend outing
 - No documents uploaded
 
-## Install
+---
+
+## Installation Guide
 
 ### Chrome & Chromium-based Browsers (Chrome, Brave, Edge, Opera, Vivaldi)
-1. Extract the ZIP or clone this repository.
-2. Open `chrome://extensions` in Chrome.
-3. Enable **Developer mode** (toggle in the top-right corner).
-4. Select **Load unpacked** and choose this folder.
+1. **Download the ZIP**: Download `camu-autopass-v3.5.0.zip` (or `v3.4.0.zip`) from the table above and extract it into a folder.
+2. Open `chrome://extensions` in your browser.
+3. Enable **Developer mode** (toggle located in the upper-right corner).
+4. Click **Load unpacked** and select the unzipped extension folder.
 5. Sign in to CAMU in the same Chrome profile.
-6. Open the extension and save your settings.
+6. Click the extension icon in your toolbar and save your desired settings.
 
 ### Firefox & Firefox-based Browsers (Firefox, LibreWolf, Zen, Waterfox, Floorp)
-1. Extract the ZIP or clone this repository.
+1. **Download the ZIP**: Download `camu-autopass-v3.5.0.zip` from the table above and extract it into a folder.
 2. Open `about:debugging` in Firefox.
-3. Click on **This Firefox** (in the left sidebar).
-4. Under **Temporary Extensions**, click **Load Temporary Add-on…**.
-5. Select the `manifest.json` file inside this folder.
+3. Click on **This Firefox** in the left sidebar.
+4. Under the **Temporary Extensions** section, click **Load Temporary Add-on…**.
+5. Select the `manifest.json` file inside the unzipped folder.
 6. Sign in to CAMU in the same Firefox profile.
-7. Open the extension and save your settings.
+7. Click the extension icon in your toolbar and save your desired settings.
+
+---
 
 The browser must be running and the computer awake during the Thursday execution window for scheduled runs. The extension also includes a **Run now** button: open the CAMU Leave Management page, then click Run now to start the same three-day workflow immediately. Manual runs calculate the next full Friday–Sunday weekend.
 
@@ -59,8 +78,9 @@ The CAMU custom dropdown's first control mousedown focuses the hidden input; a s
 ## V3.4 preselected Leave Type fix
 The user's screenshot confirms that CAMU already displays `Leave` as the selected Leave Type. React-Select excludes the currently selected item from its open options list, which is why the diagnostic showed only `On Duty` and `Medical Leave`. V3.4 first reads the selected-value node and accepts an exact existing selection before attempting to open the menu. The same protection applies to Gate Pass Type. If a different value is selected, the extension still opens the menu and requires an exact visible option match.
 
-## Firefox and Gecko Compatibility
+## V3.5 Firefox and Gecko Compatibility
 - **Unified Extension API (`browser` / `chrome`):** Handles Promise resolution transparently across Firefox's native Promise-based `browser.*` namespace and Chrome's Manifest V3 `chrome.*` namespace.
 - **Dual Background Dispatch:** Configures `background.scripts` for Firefox event pages while retaining `background.service_worker` for Chromium service workers.
 - **Gecko Manifest Settings:** Added `browser_specific_settings.gecko` with unique extension ID and declared `data_collection_permissions`.
 - **Safe DOM Injection:** Replaced dynamic `innerHTML` rendering in the history view with sanitized DOM creation methods (`replaceChildren` and `textContent`), adhering to Mozilla add-on security policies.
+- **Automated Release Workflow:** Added `.github/workflows/release.yml` to package and attach extension ZIP binaries to GitHub Releases automatically.
