@@ -24,7 +24,7 @@ All releases with changelogs and assets are available on the [GitHub Releases pa
 - Supported CAMU page versions: **v1** (`https://student.camu.in/v1/leaveManagement`) and **v2** (`https://student.camu.in/v2/leaveManagement`) (selectable in settings; default v2)
 - Daily leave and gate-pass timing: 06:00–20:00 (same day for each application)
 - Leave type: Leave (fixed; CAMU dropdown option)
-- Gate pass type: Weekend (fixed)
+- Gate pass type: Weekend (`Week End Gate Pass` / `Weekend`)
 - Gate pass reason: Weekend outing
 - No documents uploaded
 
@@ -93,14 +93,6 @@ V1.6 fixes a malformed regular expression in content.js that prevented the entir
 ## V2.7 time-picker diagnostics
 Open the CAMU Leave Management page (v1 or v2) and click the extension's `Diagnose CAMU time picker (no submission)` button. It focuses and opens the From/To time controls, inspects their visible DOM structure, and displays a JSON report in the extension popup. This diagnostic does not enter values or save an application. Copy the report from the popup and share it for troubleshooting. Close any open DevTools and refresh CAMU first if the portal is displaying its anti-debugging warning.
 
-V3.2 specifically fixes CAMU React-Select opening: it targets the visible control wrapper for Gate Pass Type (the input is opacity:0), dispatches the mousedown event React-Select expects, and verifies the selected value before continuing. If the option cannot be confirmed, it stops before Save.
-
-V3.3 React-Select interaction correction:
-The CAMU custom dropdown's first control mousedown focuses the hidden input; a subsequent control mousedown opens the menu. V3.3 performs this two-step interaction, then uses ArrowDown as a fallback and selects only an exact visible option match. If the menu/options or selected value cannot be confirmed, it stops before Save. This is code-level calibrated from the supplied DOM report; live portal execution still needs user verification.
-
-V3.4 preselected Leave Type fix:
-The user's screenshot confirms that CAMU already displays `Leave` as the selected Leave Type. React-Select excludes the currently selected item from its open options list, which is why the diagnostic showed only `On Duty` and `Medical Leave`. V3.4 first reads the selected-value node and accepts an exact existing selection before attempting to open the menu. The same protection applies to Gate Pass Type. If a different value is selected, the extension still opens the menu and requires an exact visible option match.
-
 ## V3.5 Cross-Browser Compatibility (Chrome, Firefox & Safari) & Multi-Version (v1 + v2) Support
 - **Unified Extension API (`browser` / `chrome`):** Handles Promise resolution transparently across Firefox's native Promise-based `browser.*` namespace, Chrome's Manifest V3 `chrome.*` namespace, and Apple Safari's WebExtension APIs.
 - **Dual Portal Version Support:** Automatically matches and injects into both `https://student.camu.in/v1/leaveManagement*` and `https://student.camu.in/v2/leaveManagement*`.
@@ -111,3 +103,10 @@ The user's screenshot confirms that CAMU already displays `Leave` as the selecte
 - **Standardized Extension Icons:** High-resolution icons (16px to 1024px) for browser toolbars, Safari extension tabs, and App Store metadata.
 - **Safe DOM Injection:** Replaced dynamic `innerHTML` rendering in the history view with sanitized DOM creation methods (`replaceChildren` and `textContent`), adhering to Mozilla and Apple add-on security policies.
 - **Automated Release Workflow:** GitHub Actions release workflow packages and attaches extension ZIP binaries to GitHub Releases automatically.
+
+## Single-Click Workflow & Multi-Dropdown Calibration
+- **Forward-Only Target Discovery (`findDropdownAfterLabel`)**: Uses DOM relative position ordering (`Node.DOCUMENT_POSITION_FOLLOWING`) to ensure that dropdown lookups strictly resolve to the control that appears **after** the corresponding label. This completely eliminates cross-field interference where `Gate Pass Type` accidentally targeted the preceding `Leave Type` control.
+- **Scoped Dropdown Reading (`readDropdownValue`)**: Reads the active selection directly from the target control's single-value node, value container, or input, without bleeding across other form elements.
+- **Pre-Selected Option Pass-Through**: Detects when CAMU has already initialized a dropdown with the desired default (such as `"Leave"` on form open), seamlessly proceeding without redundant clicks that could deselect or trigger false verification errors.
+- **Multi-Trigger React-Select Menu Opening**: Deploys a comprehensive event dispatching sequence (control mouse events, indicator arrow clicks, input focus, and keyboard `ArrowDown`) to guarantee that dynamic React-Select dropdowns (like `Gate Pass Type`) open and commit their options reliably on the very first run.
+- **Modal Lifecycle Awareness (`isFormAlreadyOpen`)**: Detects if the leave and gate-pass form modal is already open, avoiding accidental clicks on top-level headers or back buttons (`<-- Apply Leave and Gate Pass`).

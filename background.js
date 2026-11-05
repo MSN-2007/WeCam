@@ -1,7 +1,12 @@
 const ext = typeof browser !== 'undefined' ? browser : chrome;
 const ALARM = 'camu-autopass-check';
-const URL = 'https://student.camu.in/v2/leaveManagement';
+const PAGES = {
+  v1: 'https://student.camu.in/v1/leaveManagement',
+  v2: 'https://student.camu.in/v2/leaveManagement',
+};
+const pageUrl = (settings) => PAGES[settings?.pageVersion] || PAGES.v2;
 const TZ = 'Asia/Kolkata';
+
 const localParts = (date = new Date()) =>
   new Intl.DateTimeFormat('en-CA', {
     timeZone: TZ,
@@ -86,8 +91,8 @@ ext.alarms.onAlarm.addListener(async (alarm) => {
   }
   if (p.weekday !== 'Thu') return;
   const [hh, mm] = (settings.runAt || '09:05').split(':').map(Number);
-  const nowMin = Number(p.hour) * 60 + Number(p.minute),
-    target = hh * 60 + mm;
+  const nowMin = Number(p.hour) * 60 + Number(p.minute);
+  const target = hh * 60 + mm;
   if (nowMin < 9 * 60 || nowMin > 23 * 60 || nowMin < target) return;
 
   const key = thursdayDateKey(p);
@@ -96,7 +101,7 @@ ext.alarms.onAlarm.addListener(async (alarm) => {
 
   // Mark before opening so repeated alarm ticks cannot launch duplicate runs.
   await ext.storage.local.set({ lastAttemptThursday: key, running: true });
-  const tab = await ext.tabs.create({ url: URL, active: false });
+  const tab = await ext.tabs.create({ url: pageUrl(settings), active: false });
   await ext.storage.local.set({ automationTabId: tab.id });
 });
 

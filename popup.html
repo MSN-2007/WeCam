@@ -1,15 +1,85 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CAMU AutoPass</title><link rel="stylesheet" href="popup.css"></head>
-<body><main>
-  <header><div><h1>CAMU AutoPass</h1><p>Weekend leave + gate pass</p></div><div class="header-actions"><label class="theme-control" for="theme">Theme<select id="theme" aria-label="Choose theme"><option value="light">Light</option><option value="dark">Dark</option></select></label><span class="pill">V3.5</span></div></header>
-  <label class="toggle"><span><b>Automation enabled</b><small>Scheduled run on Thursday; manual run available anytime</small></span><input id="enabled" type="checkbox"></label>
-  <section><h2>Thursday schedule</h2><label>Start time (9:00 AM–11:00 PM)<input id="runAt" type="time" min="09:00" max="23:00" value="09:05"></label></section>
-  <section><h2>Daily application timing</h2><div class="grid"><label>From<input id="fromTime" type="time" value="06:00"></label><label>To<input id="toTime" type="time" value="20:00"></label></div><small>Same timing is used separately for Friday, Saturday and Sunday, for both leave and gate pass.</small></section>
-  <section><h2>Fixed application details</h2><div class="fixed"><span>Leave type</span><b>Leave</b><span>Gate pass type</span><b>Weekend</b><span>Gate pass reason</span><b>Weekend outing</b><span>Documents</span><b>None</b></div></section>
-  <section><h2>This month</h2><div id="history" class="history">No activity this month.</div></section>
-  <button id="runNow" class="run-now">Run now — fill and submit</button>
-  <button id="save">Save settings</button><button id="test" class="secondary">Test page detection (no submission)</button>
-  <button id="diagnoseTime" class="secondary">Diagnose CAMU time picker (no submission)</button>
-  <textarea id="diagnosticReport" class="diagnostic-report" rows="8" readonly placeholder="Time-picker diagnostic report will appear here. Copy it and send it in chat."></textarea>
-  <p id="status" role="status"></p><footer>CAMU login must be active. Manual Run Now starts immediately on the open Leave Management tab. CAMU may reject submissions outside its Thursday 09:00–23:00 application window.</footer>
-</main><script src="popup.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAMU AutoPass</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>CAMU AutoPass</h1>
+        <p>Weekend leave + gate pass</p>
+      </div>
+      <div class="header-actions">
+        <label class="theme-control" for="theme">
+          Theme
+          <select id="theme" aria-label="Choose theme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+        <span class="pill">V3.5</span>
+      </div>
+    </header>
+
+    <label class="toggle">
+      <span>
+        <b>Automation enabled</b>
+        <small>Scheduled run on Thursday; manual run available anytime</small>
+      </span>
+      <input id="enabled" type="checkbox">
+    </label>
+
+    <section>
+      <h2>Thursday schedule</h2>
+      <label>
+        Start time (9:00 AM–11:00 PM)
+        <input id="runAt" type="time" min="09:00" max="23:00" value="09:05">
+      </label>
+      <label>
+        CAMU page version
+        <select id="pageVersion">
+          <option value="v2">v2 (student.camu.in/v2/leaveManagement)</option>
+          <option value="v1">v1 (student.camu.in/v1/leaveManagement)</option>
+        </select>
+      </label>
+    </section>
+
+    <section>
+      <h2>Daily application timing</h2>
+      <div class="grid">
+        <label>From <input id="fromTime" type="time" value="06:00"></label>
+        <label>To <input id="toTime" type="time" value="20:00"></label>
+      </div>
+      <small>Same timing is used separately for Friday, Saturday and Sunday, for both leave and gate pass.</small>
+    </section>
+
+    <section>
+      <h2>Fixed application details</h2>
+      <div class="fixed">
+        <span>Leave type</span><b>Leave</b>
+        <span>Gate pass type</span><b>Weekend</b>
+        <span>Gate pass reason</span><b>Weekend outing</b>
+        <span>Documents</span><b>None</b>
+      </div>
+    </section>
+
+    <section>
+      <h2>This month</h2>
+      <div id="history" class="history">No activity this month.</div>
+    </section>
+
+    <button id="runNow" class="run-now">Run now — fill and submit</button>
+    <button id="save">Save settings</button>
+    <button id="test" class="secondary">Test page detection (no submission)</button>
+    <button id="diagnoseTime" class="secondary">Diagnose CAMU time picker (no submission)</button>
+    <textarea id="diagnosticReport" class="diagnostic-report" rows="8" readonly placeholder="Time-picker diagnostic report will appear here. Copy it and send it in chat."></textarea>
+    <p id="status" role="status"></p>
+    <footer>CAMU login must be active. Manual Run Now starts immediately on the open Leave Management tab (v1 or v2). CAMU may reject submissions outside its Thursday 09:00–23:00 application window.</footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

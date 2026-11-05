@@ -1,6 +1,14 @@
 const ext = typeof browser !== 'undefined' ? browser : chrome;
 const $ = (id) => document.getElementById(id);
 
+function isCamuLeavePage(url) {
+  return (
+    typeof url === 'string' &&
+    (url.startsWith('https://student.camu.in/v1/leaveManagement') ||
+      url.startsWith('https://student.camu.in/v2/leaveManagement'))
+  );
+}
+
 function applyTheme(theme) {
   const selected = theme === 'dark' ? 'dark' : 'light';
   document.documentElement.dataset.theme = selected;
@@ -23,6 +31,7 @@ async function load() {
   applyTheme(settings.theme || 'light');
   $('enabled').checked = !!settings.enabled;
   $('runAt').value = settings.runAt || '09:05';
+  $('pageVersion').value = settings.pageVersion || 'v2';
   $('fromTime').value = settings.fromTime || '06:00';
   $('toTime').value = settings.toTime || '20:00';
   const month = new Date().toISOString().slice(0, 7);
@@ -58,6 +67,7 @@ $('save').addEventListener('click', async () => {
   const settings = {
     enabled: $('enabled').checked,
     runAt,
+    pageVersion: $('pageVersion').value || 'v2',
     fromTime: $('fromTime').value,
     toTime: $('toTime').value,
     timezone: 'Asia/Kolkata',
@@ -72,7 +82,9 @@ async function ensureContentScript(tabId) {
   try {
     const pong = await ext.tabs.sendMessage(tabId, { type: 'PING' });
     if (pong?.ok) return;
-  } catch (e) {}
+  } catch (e) {
+    // If PING fails, content script needs injection
+  }
   await ext.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
 }
 
@@ -80,8 +92,8 @@ $('test').addEventListener('click', async () => {
   $('status').textContent = 'Checking CAMU page…';
   try {
     const [tab] = await ext.tabs.query({ active: true, lastFocusedWindow: true });
-    if (!tab?.id || !tab.url?.startsWith('https://student.camu.in/v2/leaveManagement')) {
-      $('status').textContent = 'Open the CAMU Leave Management page first.';
+    if (!tab?.id || !isCamuLeavePage(tab.url)) {
+      $('status').textContent = 'Open the CAMU Leave Management page (v1 or v2) first.';
       return;
     }
     await ensureContentScript(tab.id);
@@ -98,14 +110,16 @@ $('runNow').addEventListener('click', async () => {
   $('status').textContent = 'Connecting to CAMU…';
   try {
     const [tab] = await ext.tabs.query({ active: true, lastFocusedWindow: true });
-    if (!tab?.id || !tab.url?.startsWith('https://student.camu.in/v2/leaveManagement')) {
-      $('status').textContent = 'Open the CAMU Leave Management page in the active tab, then click Run now.';
+    if (!tab?.id || !isCamuLeavePage(tab.url)) {
+      $('status').textContent =
+        'Open the CAMU Leave Management page (v1 or v2) in the active tab, then click Run now.';
       return;
     }
     const { settings = {} } = await ext.storage.local.get('settings');
     await ext.storage.local.set({
       settings: {
         ...settings,
+        pageVersion: $('pageVersion').value || settings.pageVersion || 'v2',
         fromTime: $('fromTime').value || '06:00',
         toTime: $('toTime').value || '20:00',
       },
@@ -120,8 +134,6 @@ $('runNow').addEventListener('click', async () => {
   }
 });
 
-load();
-
 $('diagnoseTime').addEventListener('click', async () => {
   const button = $('diagnoseTime');
   button.disabled = true;
@@ -129,8 +141,8 @@ $('diagnoseTime').addEventListener('click', async () => {
   $('diagnosticReport').value = '';
   try {
     const [tab] = await ext.tabs.query({ active: true, lastFocusedWindow: true });
-    if (!tab?.id || !tab.url?.startsWith('https://student.camu.in/v2/leaveManagement')) {
-      $('status').textContent = 'Open the CAMU Leave Management page first.';
+    if (!tab?.id || !isCamuLeavePage(tab.url)) {
+      $('status').textContent = 'Open the CAMU Leave Management page (v1 or v2) first.';
       return;
     }
     await ensureContentScript(tab.id);
@@ -145,3 +157,5 @@ $('diagnoseTime').addEventListener('click', async () => {
     button.disabled = false;
   }
 });
+
+load();

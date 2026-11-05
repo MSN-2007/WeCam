@@ -1,6 +1,7 @@
 # OS files
 .DS_Store
 Thumbs.db
+.vscode/
 
 # Build & packaging artifacts
 web-ext-artifacts/
