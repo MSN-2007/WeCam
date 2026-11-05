@@ -1,4 +1,4 @@
-# CAMU AutoPass – Version 1 (V3.5)
+# CAMU AutoPass – Version 1 (V3.6)
 
 A cross-browser Manifest V3 extension (Chrome, Firefox, Safari, and Chromium/Gecko/WebKit-based browsers) for Thursday-only automation of **three separate daily applications** (Friday, Saturday, Sunday). Each daily form includes the Weekend leave and the integrated Weekend gate pass, so the expected total is **three form submissions**, not six.
 
@@ -10,9 +10,10 @@ You can download the pre-packaged extension ZIP directly from the GitHub Release
 
 | Release | Compatibility | Direct Download |
 | :--- | :--- | :--- |
-| **v3.5.0 (Chrome)** | **Chrome, Edge, Brave, Opera** (Zero Warnings) | [Download camu-autopass-chrome-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-chrome-v3.5.0.zip) |
-| **v3.5.0 (Firefox)** | **Firefox, Zen, LibreWolf, Floorp** (Gecko MV3) | [Download camu-autopass-firefox-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-firefox-v3.5.0.zip) |
-| **v3.5.0 (Universal)** | **All Browsers** (Chrome, Firefox, Safari) | [Download camu-autopass-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-v3.5.0.zip) |
+| **v3.6.0 (Chrome)** | **Chrome, Edge, Brave, Opera** (Native Backend Connect & Auto-Close) | [Download camu-autopass-chrome-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-chrome-v3.6.0.zip) |
+| **v3.6.0 (Firefox)** | **Firefox, Zen, LibreWolf, Floorp** (Gecko MV3) | [Download camu-autopass-firefox-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-firefox-v3.6.0.zip) |
+| **v3.6.0 (Universal)** | **All Browsers** (Chrome, Firefox, Safari) | [Download camu-autopass-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-v3.6.0.zip) |
+| **v3.5.0 (Cross-Browser)** | **Chrome, Firefox, Safari** (Pre-Native Connect) | [Download camu-autopass-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-v3.5.0.zip) |
 | **v3.4.0 (Pre-Firefox)** | **Chrome only** (Original MV3) | [Download camu-autopass-v3.4.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.4.0/camu-autopass-v3.4.0.zip) |
 
 All releases with changelogs and assets are available on the [GitHub Releases page](https://github.com/Rish3666/WeCam/releases) (and upstream [MSN-2007/WeCam Releases](https://github.com/MSN-2007/WeCam/releases)).

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "CAMU AutoPass \u2013 V3.5",
-  "version": "3.5.0",
+  "name": "CAMU AutoPass \u2013 V3.6",
+  "version": "3.6.0",
   "description": "Cross-browser CAMU weekend leave and gate-pass automation (Chrome, Firefox & Safari) with React-Select detection, semantic time validation, and Thursday scheduling.",
   "icons": {
     "16": "icons/icon-16.png",
