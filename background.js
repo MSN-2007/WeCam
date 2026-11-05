@@ -33,87 +33,6 @@ async function ensureAlarm() {
 ext.runtime.onInstalled.addListener(ensureAlarm);
 ext.runtime.onStartup.addListener(ensureAlarm);
 
-function upcomingWeekendDates() {
-  const now = new Date();
-  const kolkataNow = new Date(now.toLocaleString('en-US', { timeZone: TZ }));
-  const daysUntilFriday = (5 - kolkataNow.getDay() + 7) % 7 || 7;
-  kolkataNow.setDate(kolkataNow.getDate() + daysUntilFriday);
-
-  const dates = [];
-  for (let offset = 0; offset < 3; offset++) {
-    const d = new Date(kolkataNow);
-    d.setDate(kolkataNow.getDate() + offset);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    dates.push(`${year}-${month}-${day}`);
-  }
-  return dates;
-}
-
-function substitutePayloadDates(rawBody, dayIso) {
-  if (!rawBody) return rawBody;
-  const [y, m, d] = dayIso.split('-');
-  const mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(m) - 1];
-  const dMonY = `${d}-${mon}-${y}`;
-  const dMY = `${d}/${m}/${y}`;
-
-  try {
-    const parsed = JSON.parse(rawBody);
-    const replaceInObj = (obj) => {
-      if (!obj || typeof obj !== 'object') return obj;
-      for (const [k, v] of Object.entries(obj)) {
-        if (typeof v === 'string') {
-          if (/^\d{4}-\d{2}-\d{2}/.test(v)) obj[k] = v.replace(/^\d{4}-\d{2}-\d{2}/, dayIso);
-          else if (/^\d{2}-[A-Za-z]{3}-\d{4}/.test(v)) obj[k] = v.replace(/^\d{2}-[A-Za-z]{3}-\d{4}/, dMonY);
-          else if (/^\d{2}\/\d{2}\/\d{4}/.test(v)) obj[k] = v.replace(/^\d{2}\/\d{2}\/\d{4}/, dMY);
-        } else if (typeof v === 'object') {
-          replaceInObj(v);
-        }
-      }
-      return obj;
-    };
-    return JSON.stringify(replaceInObj(parsed));
-  } catch {
-    // Fall back to regex replacement if rawBody is not valid JSON
-    return rawBody
-      .replace(/\d{4}-\d{2}-\d{2}/g, dayIso)
-      .replace(/\d{2}-[A-Za-z]{3}-\d{4}/g, dMonY)
-      .replace(/\d{2}\/\d{2}\/\d{4}/g, dMY);
-  }
-}
-
-async function submitSingleDay(apiTemplate, dayIso, dayName) {
-  const body = substitutePayloadDates(apiTemplate.body, dayIso);
-  const headers = { ...apiTemplate.headers };
-  delete headers['content-length'];
-  delete headers['host'];
-
-  const response = await fetch(apiTemplate.url, {
-    method: apiTemplate.method || 'POST',
-    headers,
-    body: body || undefined,
-    credentials: 'include',
-  });
-
-  const text = await response.text();
-  const lower = text.toLowerCase();
-  let status;
-  if (response.ok) {
-    if (/duplicate|already applied|duplicate request/i.test(lower)) {
-      status = 'duplicate';
-    } else {
-      status = 'submitted';
-    }
-  } else if (/duplicate/i.test(lower)) {
-    status = 'duplicate';
-  } else {
-    status = 'failed';
-  }
-
-  return { day: dayName, date: dayIso, status };
-}
-
 async function closeAutomationTab() {
   const { automationTabId } = await ext.storage.local.get('automationTabId');
   if (automationTabId) {
@@ -154,42 +73,33 @@ async function recordRunFinished(result) {
   });
 }
 
-async function executeDirectBackendRun(manual = false) {
-  const { apiTemplate = null } = await ext.storage.local.get('apiTemplate');
-  if (!apiTemplate?.url) {
-    throw new Error('No captured CAMU API template found. Open CAMU once to capture.');
+async function sendAutomationCommand(tabId, message, maxRetries = 5) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const pong = await ext.tabs.sendMessage(tabId, { type: 'PING' });
+      if (pong?.ok) {
+        await ext.tabs.sendMessage(tabId, message);
+        return;
+      }
+    } catch {
+      // Content script may not be ready yet, wait before retrying
+    }
+    await new Promise((resolve) => setTimeout(resolve, 800));
   }
-
-  const dates = upcomingWeekendDates();
-  const names = ['Friday', 'Saturday', 'Sunday'];
-
-  const r1 = await submitSingleDay(apiTemplate, dates[0], names[0]);
-  const r2 = await submitSingleDay(apiTemplate, dates[1], names[1]);
-  const r3 = await submitSingleDay(apiTemplate, dates[2], names[2]);
-  const results = [r1, r2, r3];
-
-  const allSuccess = results.every((x) => ['submitted', 'duplicate'].includes(x.status));
-  const runResult = {
-    status: allSuccess ? 'complete' : 'needs_attention',
-    results,
-    mode: manual ? 'manual_direct' : 'scheduled_direct',
-  };
-
-  await recordRunFinished(runResult);
-  return runResult;
+  try {
+    if (ext.scripting?.executeScript) {
+      await ext.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
+      await ext.tabs.sendMessage(tabId, message);
+    }
+  } catch (err) {
+    console.error('Failed to dispatch automation command to tab:', err);
+  }
 }
 
 ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg?.type === 'RESCHEDULE') {
     ensureAlarm().catch((err) => {
       console.error('Failed to reschedule alarm:', err);
-    });
-    sendResponse({ ok: true });
-    return true;
-  }
-  if (msg?.type === 'API_TEMPLATE_CAPTURED') {
-    ext.storage.local.set({ apiTemplate: msg.template }).catch((err) => {
-      console.error('Failed to save API template:', err);
     });
     sendResponse({ ok: true });
     return true;
@@ -206,16 +116,6 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     })()
       .then(() => sendResponse({ ok: true }))
       .catch((err) => sendResponse({ ok: false, message: err.message }));
-    return true;
-  }
-  if (msg?.type === 'EXECUTE_BACKEND_NOW') {
-    executeDirectBackendRun(true)
-      .then((res) => {
-        sendResponse({ ok: true, message: `${res.results.length} submissions processed directly.` });
-      })
-      .catch((err) => {
-        sendResponse({ ok: false, message: err.message });
-      });
     return true;
   }
   if (msg?.type === 'RUN_FINISHED') {
@@ -263,18 +163,7 @@ ext.tabs.onUpdated.addListener(async (tabId, change) => {
     'runManualTrigger',
   ]);
   if (tabId !== automationTabId) return;
-  try {
-    await ext.tabs.sendMessage(tabId, {
-      type: runManualTrigger ? 'RUN_MANUAL' : 'START_AUTOPASS',
-    });
-  } catch {
-    await closeAutomationTab();
-    await ext.storage.local.set({
-      running: false,
-      lastRunResult: {
-        status: 'error',
-        message: 'Could not connect to CAMU page. Open CAMU and check the extension.',
-      },
-    });
-  }
+  await sendAutomationCommand(tabId, {
+    type: runManualTrigger ? 'RUN_MANUAL' : 'START_AUTOPASS',
+  });
 });
