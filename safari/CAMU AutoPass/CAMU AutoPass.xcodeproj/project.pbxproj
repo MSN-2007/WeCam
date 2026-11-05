@@ -1,0 +1,967 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AE0D2D53309C4F3B007F213A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0D2D52309C4F3B007F213A /* AppDelegate.swift */; };
+		AE0D2D55309C4F3B007F213A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0D2D54309C4F3B007F213A /* SceneDelegate.swift */; };
+		AE0D2D58309C4F3B007F213A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D56309C4F3B007F213A /* LaunchScreen.storyboard */; };
+		AE0D2D5B309C4F3B007F213A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D59309C4F3B007F213A /* Main.storyboard */; };
+		AE0D2D64309C4F3B007F213A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0D2D63309C4F3B007F213A /* AppDelegate.swift */; };
+		AE0D2D67309C4F3B007F213A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D65309C4F3B007F213A /* Main.storyboard */; };
+		AE0D2D6E309C4F3B007F213A /* CAMU AutoPass Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AE0D2D6D309C4F3B007F213A /* CAMU AutoPass Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AE0D2D78309C4F3B007F213A /* CAMU AutoPass Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AE0D2D77309C4F3B007F213A /* CAMU AutoPass Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AE0D2D7D309C4F3B007F213A /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D42309C4F3A007F213A /* Main.html */; };
+		AE0D2D7E309C4F3B007F213A /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D42309C4F3A007F213A /* Main.html */; };
+		AE0D2D7F309C4F3B007F213A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D44309C4F3A007F213A /* Icon.png */; };
+		AE0D2D80309C4F3B007F213A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D44309C4F3A007F213A /* Icon.png */; };
+		AE0D2D81309C4F3B007F213A /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D45309C4F3A007F213A /* Style.css */; };
+		AE0D2D82309C4F3B007F213A /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D45309C4F3A007F213A /* Style.css */; };
+		AE0D2D83309C4F3B007F213A /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D46309C4F3A007F213A /* Script.js */; };
+		AE0D2D84309C4F3B007F213A /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D46309C4F3A007F213A /* Script.js */; };
+		AE0D2D85309C4F3B007F213A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0D2D47309C4F3A007F213A /* ViewController.swift */; };
+		AE0D2D86309C4F3B007F213A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0D2D47309C4F3A007F213A /* ViewController.swift */; };
+		AE0D2D87309C4F3B007F213A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D48309C4F3A007F213A /* Assets.xcassets */; };
+		AE0D2D88309C4F3B007F213A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D48309C4F3A007F213A /* Assets.xcassets */; };
+		AE0D2D89309C4F3B007F213A /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0D2D4A309C4F3A007F213A /* SafariWebExtensionHandler.swift */; };
+		AE0D2D8A309C4F3B007F213A /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0D2D4A309C4F3A007F213A /* SafariWebExtensionHandler.swift */; };
+		AE0D2DA5309C4F3B007F213A /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D9C309C4F3B007F213A /* popup.js */; };
+		AE0D2DA6309C4F3B007F213A /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D9D309C4F3B007F213A /* background.js */; };
+		AE0D2DA7309C4F3B007F213A /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D9E309C4F3B007F213A /* popup.html */; };
+		AE0D2DA8309C4F3B007F213A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D9F309C4F3B007F213A /* README.md */; };
+		AE0D2DA9309C4F3B007F213A /* safari in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA0309C4F3B007F213A /* safari */; };
+		AE0D2DAA309C4F3B007F213A /* icons in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA1309C4F3B007F213A /* icons */; };
+		AE0D2DAB309C4F3B007F213A /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA2309C4F3B007F213A /* manifest.json */; };
+		AE0D2DAC309C4F3B007F213A /* popup.css in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA3309C4F3B007F213A /* popup.css */; };
+		AE0D2DAD309C4F3B007F213A /* content.js in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA4309C4F3B007F213A /* content.js */; };
+		AE0D2DAE309C4F3B007F213A /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D9C309C4F3B007F213A /* popup.js */; };
+		AE0D2DAF309C4F3B007F213A /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D9D309C4F3B007F213A /* background.js */; };
+		AE0D2DB0309C4F3B007F213A /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D9E309C4F3B007F213A /* popup.html */; };
+		AE0D2DB1309C4F3B007F213A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2D9F309C4F3B007F213A /* README.md */; };
+		AE0D2DB2309C4F3B007F213A /* safari in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA0309C4F3B007F213A /* safari */; };
+		AE0D2DB3309C4F3B007F213A /* icons in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA1309C4F3B007F213A /* icons */; };
+		AE0D2DB4309C4F3B007F213A /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA2309C4F3B007F213A /* manifest.json */; };
+		AE0D2DB5309C4F3B007F213A /* popup.css in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA3309C4F3B007F213A /* popup.css */; };
+		AE0D2DB6309C4F3B007F213A /* content.js in Resources */ = {isa = PBXBuildFile; fileRef = AE0D2DA4309C4F3B007F213A /* content.js */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AE0D2D6F309C4F3B007F213A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE0D2D3C309C4F3A007F213A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AE0D2D6C309C4F3B007F213A;
+			remoteInfo = "CAMU AutoPass Extension (iOS)";
+		};
+		AE0D2D79309C4F3B007F213A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE0D2D3C309C4F3A007F213A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AE0D2D76309C4F3B007F213A;
+			remoteInfo = "CAMU AutoPass Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AE0D2D90309C4F3B007F213A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				AE0D2D6E309C4F3B007F213A /* CAMU AutoPass Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+		AE0D2D97309C4F3B007F213A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				AE0D2D78309C4F3B007F213A /* CAMU AutoPass Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		AE0D2D43309C4F3A007F213A /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
+		AE0D2D44309C4F3A007F213A /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		AE0D2D45309C4F3A007F213A /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		AE0D2D46309C4F3A007F213A /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		AE0D2D47309C4F3A007F213A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		AE0D2D48309C4F3A007F213A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AE0D2D4A309C4F3A007F213A /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		AE0D2D4F309C4F3B007F213A /* CAMU AutoPass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CAMU AutoPass.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE0D2D52309C4F3B007F213A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AE0D2D54309C4F3B007F213A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		AE0D2D57309C4F3B007F213A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AE0D2D5A309C4F3B007F213A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AE0D2D5C309C4F3B007F213A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE0D2D61309C4F3B007F213A /* CAMU AutoPass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CAMU AutoPass.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE0D2D63309C4F3B007F213A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AE0D2D66309C4F3B007F213A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AE0D2D68309C4F3B007F213A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE0D2D6D309C4F3B007F213A /* CAMU AutoPass Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CAMU AutoPass Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE0D2D72309C4F3B007F213A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE0D2D77309C4F3B007F213A /* CAMU AutoPass Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CAMU AutoPass Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE0D2D7C309C4F3B007F213A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE0D2D9C309C4F3B007F213A /* popup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = popup.js; path = ../../../popup.js; sourceTree = "<group>"; };
+		AE0D2D9D309C4F3B007F213A /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = background.js; path = ../../../background.js; sourceTree = "<group>"; };
+		AE0D2D9E309C4F3B007F213A /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = popup.html; path = ../../../popup.html; sourceTree = "<group>"; };
+		AE0D2D9F309C4F3B007F213A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../../README.md; sourceTree = "<group>"; };
+		AE0D2DA0309C4F3B007F213A /* safari */ = {isa = PBXFileReference; lastKnownFileType = folder; name = safari; path = ../..; sourceTree = "<group>"; };
+		AE0D2DA1309C4F3B007F213A /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../../icons; sourceTree = "<group>"; };
+		AE0D2DA2309C4F3B007F213A /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../../manifest.json; sourceTree = "<group>"; };
+		AE0D2DA3309C4F3B007F213A /* popup.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = popup.css; path = ../../../popup.css; sourceTree = "<group>"; };
+		AE0D2DA4309C4F3B007F213A /* content.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = content.js; path = ../../../content.js; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AE0D2D4C309C4F3B007F213A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		AE0D2D5E309C4F3B007F213A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		AE0D2D6A309C4F3B007F213A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		AE0D2D74309C4F3B007F213A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AE0D2D3B309C4F3A007F213A = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D40309C4F3A007F213A /* Shared (App) */,
+				AE0D2D49309C4F3A007F213A /* Shared (Extension) */,
+				AE0D2D51309C4F3B007F213A /* iOS (App) */,
+				AE0D2D62309C4F3B007F213A /* macOS (App) */,
+				AE0D2D71309C4F3B007F213A /* iOS (Extension) */,
+				AE0D2D7B309C4F3B007F213A /* macOS (Extension) */,
+				AE0D2D50309C4F3B007F213A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AE0D2D40309C4F3A007F213A /* Shared (App) */ = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D47309C4F3A007F213A /* ViewController.swift */,
+				AE0D2D48309C4F3A007F213A /* Assets.xcassets */,
+				AE0D2D41309C4F3A007F213A /* Resources */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		AE0D2D41309C4F3A007F213A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D42309C4F3A007F213A /* Main.html */,
+				AE0D2D44309C4F3A007F213A /* Icon.png */,
+				AE0D2D45309C4F3A007F213A /* Style.css */,
+				AE0D2D46309C4F3A007F213A /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AE0D2D49309C4F3A007F213A /* Shared (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D9B309C4F3B007F213A /* Resources */,
+				AE0D2D4A309C4F3A007F213A /* SafariWebExtensionHandler.swift */,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		AE0D2D50309C4F3B007F213A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D4F309C4F3B007F213A /* CAMU AutoPass.app */,
+				AE0D2D61309C4F3B007F213A /* CAMU AutoPass.app */,
+				AE0D2D6D309C4F3B007F213A /* CAMU AutoPass Extension.appex */,
+				AE0D2D77309C4F3B007F213A /* CAMU AutoPass Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AE0D2D51309C4F3B007F213A /* iOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D52309C4F3B007F213A /* AppDelegate.swift */,
+				AE0D2D54309C4F3B007F213A /* SceneDelegate.swift */,
+				AE0D2D56309C4F3B007F213A /* LaunchScreen.storyboard */,
+				AE0D2D59309C4F3B007F213A /* Main.storyboard */,
+				AE0D2D5C309C4F3B007F213A /* Info.plist */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		AE0D2D62309C4F3B007F213A /* macOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D63309C4F3B007F213A /* AppDelegate.swift */,
+				AE0D2D65309C4F3B007F213A /* Main.storyboard */,
+				AE0D2D68309C4F3B007F213A /* Info.plist */,
+			);
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		AE0D2D71309C4F3B007F213A /* iOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D72309C4F3B007F213A /* Info.plist */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		AE0D2D7B309C4F3B007F213A /* macOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D7C309C4F3B007F213A /* Info.plist */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+		AE0D2D9B309C4F3B007F213A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AE0D2D9C309C4F3B007F213A /* popup.js */,
+				AE0D2D9D309C4F3B007F213A /* background.js */,
+				AE0D2D9E309C4F3B007F213A /* popup.html */,
+				AE0D2D9F309C4F3B007F213A /* README.md */,
+				AE0D2DA0309C4F3B007F213A /* safari */,
+				AE0D2DA1309C4F3B007F213A /* icons */,
+				AE0D2DA2309C4F3B007F213A /* manifest.json */,
+				AE0D2DA3309C4F3B007F213A /* popup.css */,
+				AE0D2DA4309C4F3B007F213A /* content.js */,
+			);
+			name = Resources;
+			path = "Shared (Extension)";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AE0D2D4E309C4F3B007F213A /* CAMU AutoPass (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE0D2D91309C4F3B007F213A /* Build configuration list for PBXNativeTarget "CAMU AutoPass (iOS)" */;
+			buildPhases = (
+				AE0D2D4B309C4F3B007F213A /* Sources */,
+				AE0D2D4C309C4F3B007F213A /* Frameworks */,
+				AE0D2D4D309C4F3B007F213A /* Resources */,
+				AE0D2D90309C4F3B007F213A /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AE0D2D70309C4F3B007F213A /* PBXTargetDependency */,
+			);
+			name = "CAMU AutoPass (iOS)";
+			productName = "CAMU AutoPass (iOS)";
+			productReference = AE0D2D4F309C4F3B007F213A /* CAMU AutoPass.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AE0D2D60309C4F3B007F213A /* CAMU AutoPass (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE0D2D98309C4F3B007F213A /* Build configuration list for PBXNativeTarget "CAMU AutoPass (macOS)" */;
+			buildPhases = (
+				AE0D2D5D309C4F3B007F213A /* Sources */,
+				AE0D2D5E309C4F3B007F213A /* Frameworks */,
+				AE0D2D5F309C4F3B007F213A /* Resources */,
+				AE0D2D97309C4F3B007F213A /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AE0D2D7A309C4F3B007F213A /* PBXTargetDependency */,
+			);
+			name = "CAMU AutoPass (macOS)";
+			productName = "CAMU AutoPass (macOS)";
+			productReference = AE0D2D61309C4F3B007F213A /* CAMU AutoPass.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AE0D2D6C309C4F3B007F213A /* CAMU AutoPass Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE0D2D8D309C4F3B007F213A /* Build configuration list for PBXNativeTarget "CAMU AutoPass Extension (iOS)" */;
+			buildPhases = (
+				AE0D2D69309C4F3B007F213A /* Sources */,
+				AE0D2D6A309C4F3B007F213A /* Frameworks */,
+				AE0D2D6B309C4F3B007F213A /* Resources */,
+			);
+			buildRules = (
+			);
+			name = "CAMU AutoPass Extension (iOS)";
+			productName = "CAMU AutoPass Extension (iOS)";
+			productReference = AE0D2D6D309C4F3B007F213A /* CAMU AutoPass Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		AE0D2D76309C4F3B007F213A /* CAMU AutoPass Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE0D2D94309C4F3B007F213A /* Build configuration list for PBXNativeTarget "CAMU AutoPass Extension (macOS)" */;
+			buildPhases = (
+				AE0D2D73309C4F3B007F213A /* Sources */,
+				AE0D2D74309C4F3B007F213A /* Frameworks */,
+				AE0D2D75309C4F3B007F213A /* Resources */,
+			);
+			buildRules = (
+			);
+			name = "CAMU AutoPass Extension (macOS)";
+			productName = "CAMU AutoPass Extension (macOS)";
+			productReference = AE0D2D77309C4F3B007F213A /* CAMU AutoPass Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AE0D2D3C309C4F3A007F213A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					AE0D2D4E309C4F3B007F213A = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					AE0D2D60309C4F3B007F213A = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					AE0D2D6C309C4F3B007F213A = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					AE0D2D76309C4F3B007F213A = {
+						CreatedOnToolsVersion = 27.0;
+					};
+				};
+			};
+			buildConfigurationList = AE0D2D3F309C4F3A007F213A /* Build configuration list for PBXProject "CAMU AutoPass" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AE0D2D3B309C4F3A007F213A;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = AE0D2D50309C4F3B007F213A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AE0D2D4E309C4F3B007F213A /* CAMU AutoPass (iOS) */,
+				AE0D2D60309C4F3B007F213A /* CAMU AutoPass (macOS) */,
+				AE0D2D6C309C4F3B007F213A /* CAMU AutoPass Extension (iOS) */,
+				AE0D2D76309C4F3B007F213A /* CAMU AutoPass Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AE0D2D4D309C4F3B007F213A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				AE0D2D7F309C4F3B007F213A /* Icon.png in Resources */,
+				AE0D2D58309C4F3B007F213A /* LaunchScreen.storyboard in Resources */,
+				AE0D2D7D309C4F3B007F213A /* Main.html in Resources */,
+				AE0D2D83309C4F3B007F213A /* Script.js in Resources */,
+				AE0D2D87309C4F3B007F213A /* Assets.xcassets in Resources */,
+				AE0D2D5B309C4F3B007F213A /* Main.storyboard in Resources */,
+				AE0D2D81309C4F3B007F213A /* Style.css in Resources */,
+			);
+		};
+		AE0D2D5F309C4F3B007F213A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				AE0D2D80309C4F3B007F213A /* Icon.png in Resources */,
+				AE0D2D82309C4F3B007F213A /* Style.css in Resources */,
+				AE0D2D67309C4F3B007F213A /* Main.storyboard in Resources */,
+				AE0D2D84309C4F3B007F213A /* Script.js in Resources */,
+				AE0D2D88309C4F3B007F213A /* Assets.xcassets in Resources */,
+				AE0D2D7E309C4F3B007F213A /* Main.html in Resources */,
+			);
+		};
+		AE0D2D6B309C4F3B007F213A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				AE0D2DB2309C4F3B007F213A /* safari in Resources */,
+				AE0D2DB4309C4F3B007F213A /* manifest.json in Resources */,
+				AE0D2DAF309C4F3B007F213A /* background.js in Resources */,
+				AE0D2DB0309C4F3B007F213A /* popup.html in Resources */,
+				AE0D2DB5309C4F3B007F213A /* popup.css in Resources */,
+				AE0D2DB3309C4F3B007F213A /* icons in Resources */,
+				AE0D2DB6309C4F3B007F213A /* content.js in Resources */,
+				AE0D2DB1309C4F3B007F213A /* README.md in Resources */,
+				AE0D2DAE309C4F3B007F213A /* popup.js in Resources */,
+			);
+		};
+		AE0D2D75309C4F3B007F213A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				AE0D2DA9309C4F3B007F213A /* safari in Resources */,
+				AE0D2DAB309C4F3B007F213A /* manifest.json in Resources */,
+				AE0D2DA6309C4F3B007F213A /* background.js in Resources */,
+				AE0D2DA7309C4F3B007F213A /* popup.html in Resources */,
+				AE0D2DAC309C4F3B007F213A /* popup.css in Resources */,
+				AE0D2DAA309C4F3B007F213A /* icons in Resources */,
+				AE0D2DAD309C4F3B007F213A /* content.js in Resources */,
+				AE0D2DA8309C4F3B007F213A /* README.md in Resources */,
+				AE0D2DA5309C4F3B007F213A /* popup.js in Resources */,
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AE0D2D4B309C4F3B007F213A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				AE0D2D85309C4F3B007F213A /* ViewController.swift in Sources */,
+				AE0D2D53309C4F3B007F213A /* AppDelegate.swift in Sources */,
+				AE0D2D55309C4F3B007F213A /* SceneDelegate.swift in Sources */,
+			);
+		};
+		AE0D2D5D309C4F3B007F213A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				AE0D2D86309C4F3B007F213A /* ViewController.swift in Sources */,
+				AE0D2D64309C4F3B007F213A /* AppDelegate.swift in Sources */,
+			);
+		};
+		AE0D2D69309C4F3B007F213A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				AE0D2D89309C4F3B007F213A /* SafariWebExtensionHandler.swift in Sources */,
+			);
+		};
+		AE0D2D73309C4F3B007F213A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				AE0D2D8A309C4F3B007F213A /* SafariWebExtensionHandler.swift in Sources */,
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AE0D2D70309C4F3B007F213A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AE0D2D6C309C4F3B007F213A /* CAMU AutoPass Extension (iOS) */;
+			targetProxy = AE0D2D6F309C4F3B007F213A /* PBXContainerItemProxy */;
+		};
+		AE0D2D7A309C4F3B007F213A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AE0D2D76309C4F3B007F213A /* CAMU AutoPass Extension (macOS) */;
+			targetProxy = AE0D2D79309C4F3B007F213A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AE0D2D42309C4F3A007F213A /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AE0D2D43309C4F3A007F213A /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		AE0D2D56309C4F3B007F213A /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AE0D2D57309C4F3B007F213A /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		AE0D2D59309C4F3B007F213A /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AE0D2D5A309C4F3B007F213A /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		AE0D2D65309C4F3B007F213A /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AE0D2D66309C4F3B007F213A /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AE0D2D8B309C4F3B007F213A /* Debug configuration for PBXProject "CAMU AutoPass" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AE0D2D8C309C4F3B007F213A /* Release configuration for PBXProject "CAMU AutoPass" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		AE0D2D8E309C4F3B007F213A /* Debug configuration for PBXNativeTarget "CAMU AutoPass Extension (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CAMU AutoPass Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.msn2007.wecam.Extension;
+				PRODUCT_NAME = "CAMU AutoPass Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AE0D2D8F309C4F3B007F213A /* Release configuration for PBXNativeTarget "CAMU AutoPass Extension (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CAMU AutoPass Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.msn2007.wecam.Extension;
+				PRODUCT_NAME = "CAMU AutoPass Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AE0D2D92309C4F3B007F213A /* Debug configuration for PBXNativeTarget "CAMU AutoPass (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CAMU AutoPass";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.msn2007.wecam;
+				PRODUCT_NAME = "CAMU AutoPass";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AE0D2D93309C4F3B007F213A /* Release configuration for PBXNativeTarget "CAMU AutoPass (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CAMU AutoPass";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.msn2007.wecam;
+				PRODUCT_NAME = "CAMU AutoPass";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AE0D2D95309C4F3B007F213A /* Debug configuration for PBXNativeTarget "CAMU AutoPass Extension (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CAMU AutoPass Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.msn2007.wecam.Extension;
+				PRODUCT_NAME = "CAMU AutoPass Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AE0D2D96309C4F3B007F213A /* Release configuration for PBXNativeTarget "CAMU AutoPass Extension (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CAMU AutoPass Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.msn2007.wecam.Extension;
+				PRODUCT_NAME = "CAMU AutoPass Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AE0D2D99309C4F3B007F213A /* Debug configuration for PBXNativeTarget "CAMU AutoPass (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CAMU AutoPass";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.msn2007.wecam;
+				PRODUCT_NAME = "CAMU AutoPass";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AE0D2D9A309C4F3B007F213A /* Release configuration for PBXNativeTarget "CAMU AutoPass (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CAMU AutoPass";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.msn2007.wecam;
+				PRODUCT_NAME = "CAMU AutoPass";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AE0D2D3F309C4F3A007F213A /* Build configuration list for PBXProject "CAMU AutoPass" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE0D2D8B309C4F3B007F213A /* Debug configuration for PBXProject "CAMU AutoPass" */,
+				AE0D2D8C309C4F3B007F213A /* Release configuration for PBXProject "CAMU AutoPass" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		AE0D2D8D309C4F3B007F213A /* Build configuration list for PBXNativeTarget "CAMU AutoPass Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE0D2D8E309C4F3B007F213A /* Debug configuration for PBXNativeTarget "CAMU AutoPass Extension (iOS)" */,
+				AE0D2D8F309C4F3B007F213A /* Release configuration for PBXNativeTarget "CAMU AutoPass Extension (iOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		AE0D2D91309C4F3B007F213A /* Build configuration list for PBXNativeTarget "CAMU AutoPass (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE0D2D92309C4F3B007F213A /* Debug configuration for PBXNativeTarget "CAMU AutoPass (iOS)" */,
+				AE0D2D93309C4F3B007F213A /* Release configuration for PBXNativeTarget "CAMU AutoPass (iOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		AE0D2D94309C4F3B007F213A /* Build configuration list for PBXNativeTarget "CAMU AutoPass Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE0D2D95309C4F3B007F213A /* Debug configuration for PBXNativeTarget "CAMU AutoPass Extension (macOS)" */,
+				AE0D2D96309C4F3B007F213A /* Release configuration for PBXNativeTarget "CAMU AutoPass Extension (macOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		AE0D2D98309C4F3B007F213A /* Build configuration list for PBXNativeTarget "CAMU AutoPass (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE0D2D99309C4F3B007F213A /* Debug configuration for PBXNativeTarget "CAMU AutoPass (macOS)" */,
+				AE0D2D9A309C4F3B007F213A /* Release configuration for PBXNativeTarget "CAMU AutoPass (macOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AE0D2D3C309C4F3A007F213A /* Project object */;
+	validationLevel = 1;
+}
