@@ -4,6 +4,8 @@ const CAMU_V2_URL = 'https://student.camu.in/v2/leaveManagement';
 const pageUrl = () => CAMU_V2_URL;
 const TZ = 'Asia/Kolkata';
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const localParts = (date = new Date()) =>
   new Intl.DateTimeFormat('en-CA', {
     timeZone: TZ,
@@ -73,29 +75,31 @@ async function recordRunFinished(result) {
   });
 }
 
-function sendAutomationCommand(tabId, message, retriesLeft = 5) {
-  return ext.tabs
-    .sendMessage(tabId, { type: 'PING' })
-    .then((pong) => {
-      if (pong?.ok) {
-        return ext.tabs.sendMessage(tabId, message);
-      }
-      throw new Error('Tab not ready');
-    })
-    .catch((err) => {
-      if (retriesLeft > 0) {
-        return new Promise((resolve) => setTimeout(resolve, 800)).then(() =>
-          sendAutomationCommand(tabId, message, retriesLeft - 1)
-        );
-      }
-      if (ext.scripting?.executeScript) {
-        return ext.scripting
-          .executeScript({ target: { tabId }, files: ['content.js'] })
-          .then(() => ext.tabs.sendMessage(tabId, message))
-          .catch((e) => console.error('Failed to dispatch automation command:', e));
-      }
-      console.error('Failed to dispatch automation command:', err);
-    });
+async function sendAutomationCommand(tabId, message, retriesLeft = 5) {
+  try {
+    const pong = await ext.tabs.sendMessage(tabId, { type: 'PING' });
+    if (pong?.ok) {
+      await ext.tabs.sendMessage(tabId, message);
+      return;
+    }
+  } catch {
+    // Content script not ready yet
+  }
+
+  if (retriesLeft > 0) {
+    await sleep(800);
+    await sendAutomationCommand(tabId, message, retriesLeft - 1);
+    return;
+  }
+
+  try {
+    if (ext.scripting?.executeScript) {
+      await ext.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
+      await ext.tabs.sendMessage(tabId, message);
+    }
+  } catch (err) {
+    console.error('Failed to dispatch automation command:', err);
+  }
 }
 
 ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
