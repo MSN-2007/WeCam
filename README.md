@@ -90,9 +90,6 @@ V1.5 note: If CAMU is reached through in-app/SPA navigation, the content script 
 
 V1.6 fixes a malformed regular expression in content.js that prevented the entire content script from parsing. It also waits for the injected script's PING response before sending detection or run messages, and reports injection errors more clearly.
 
-## V2.7 time-picker diagnostics
-Open the CAMU Leave Management page (v1 or v2) and click the extension's `Diagnose CAMU time picker (no submission)` button. It focuses and opens the From/To time controls, inspects their visible DOM structure, and displays a JSON report in the extension popup. This diagnostic does not enter values or save an application. Copy the report from the popup and share it for troubleshooting. Close any open DevTools and refresh CAMU first if the portal is displaying its anti-debugging warning.
-
 ## V3.5 Cross-Browser Compatibility (Chrome, Firefox & Safari) & Multi-Version (v1 + v2) Support
 - **Unified Extension API (`browser` / `chrome`):** Handles Promise resolution transparently across Firefox's native Promise-based `browser.*` namespace, Chrome's Manifest V3 `chrome.*` namespace, and Apple Safari's WebExtension APIs.
 - **Dual Portal Version Support:** Automatically matches and injects into both `https://student.camu.in/v1/leaveManagement*` and `https://student.camu.in/v2/leaveManagement*`.

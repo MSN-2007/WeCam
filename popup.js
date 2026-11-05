@@ -134,28 +134,4 @@ $('runNow').addEventListener('click', async () => {
   }
 });
 
-$('diagnoseTime').addEventListener('click', async () => {
-  const button = $('diagnoseTime');
-  button.disabled = true;
-  $('status').textContent = 'Inspecting CAMU time controls…';
-  $('diagnosticReport').value = '';
-  try {
-    const [tab] = await ext.tabs.query({ active: true, lastFocusedWindow: true });
-    if (!tab?.id || !isCamuLeavePage(tab.url)) {
-      $('status').textContent = 'Open the CAMU Leave Management page (v1 or v2) first.';
-      return;
-    }
-    await ensureContentScript(tab.id);
-    const r = await ext.tabs.sendMessage(tab.id, { type: 'DIAGNOSE_TIME_PICKER' });
-    if (!r?.ok) throw new Error(r?.message || 'Diagnostic failed.');
-    $('diagnosticReport').value = JSON.stringify(r.report, null, 2);
-    $('status').textContent = 'Diagnostic ready. Copy the report below and send it in chat.';
-  } catch (e) {
-    $('status').textContent =
-      'Could not run diagnostic: ' + e.message + '. Close DevTools if open, refresh CAMU, then try again.';
-  } finally {
-    button.disabled = false;
-  }
-});
-
 load();

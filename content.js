@@ -814,75 +814,10 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     };
   }
 
-  async function diagnoseTimePicker() {
-    const names = ['Frtm', 'ToTm'];
-    const fields = [];
-    for (const name of names) {
-      const el = document.querySelector(`input[name="${name}"]`);
-      if (!el) {
-        fields.push({ name, found: false });
-        continue;
-      }
-      el.focus();
-      el.click();
-      await sleep(450);
-      const ancestors = [];
-      let node = el;
-      for (let i = 0; i < 5 && node; i++, node = node.parentElement) {
-        ancestors.push({ tag: node.tagName, id: node.id, classes: String(node.className || ''), html: node.outerHTML.slice(0, 2200) });
-      }
-      const visibleNodes = [...document.querySelectorAll('body *')]
-        .filter((e) => {
-          const r = e.getBoundingClientRect();
-          const c = getComputedStyle(e);
-          return (
-            r.width > 0 &&
-            r.height > 0 &&
-            c.display !== 'none' &&
-            c.visibility !== 'hidden' &&
-            (e.matches('[role], button, [class*="time" i], [class*="picker" i], [class*="clock" i]') ||
-              /^(BUTTON|LI|INPUT)$/.test(e.tagName))
-          );
-        })
-        .slice(-100)
-        .map((e) => ({
-          tag: e.tagName,
-          role: e.getAttribute('role'),
-          aria: e.getAttribute('aria-label'),
-          title: e.title,
-          text: (e.innerText || e.textContent || '').trim().slice(0, 100),
-          cls: String(e.className || '').slice(0, 180),
-          html: e.outerHTML.slice(0, 650),
-        }));
-      fields.push({
-        name,
-        found: true,
-        value: el.value,
-        placeholder: el.placeholder,
-        type: el.type,
-        outerHTML: el.outerHTML,
-        ancestors,
-        visibleNodes,
-      });
-    }
-    return {
-      url: location.href,
-      at: new Date().toISOString(),
-      note: 'Diagnostic only: no form values were entered and nothing was saved.',
-      fields,
-    };
-  }
-
   ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg?.type === 'PING') {
       sendResponse({ ok: true });
       return;
-    }
-    if (msg?.type === 'DIAGNOSE_TIME_PICKER') {
-      diagnoseTimePicker()
-        .then((r) => sendResponse({ ok: true, report: r }))
-        .catch((e) => sendResponse({ ok: false, message: e.message }));
-      return true;
     }
     if (msg?.type === 'DETECT_ONLY') {
       detectOnly().then((r) => {
