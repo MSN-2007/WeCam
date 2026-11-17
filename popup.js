@@ -2,7 +2,7 @@ const ext = typeof browser !== 'undefined' ? browser : chrome;
 const $ = (id) => document.getElementById(id);
 
 function isCamuLeavePage(url) {
-  return typeof url === 'string' && url.startsWith('https://student.camu.in/v2/leaveManagement');
+  return typeof url === 'string' && /^https:\/\/student\.camu\.in\/v[12]\/leaveManagement/.test(url);
 }
 
 function applyTheme(theme) {
@@ -27,6 +27,9 @@ async function load() {
   applyTheme(settings.theme || 'dark');
   $('enabled').checked = !!settings.enabled;
   $('runAt').value = settings.runAt || '09:05';
+  if ($('pageVersion')) {
+    $('pageVersion').value = settings.pageVersion || 'v2';
+  }
   $('fromTime').value = settings.fromTime || '06:00';
   $('toTime').value = settings.toTime || '20:00';
 
@@ -63,7 +66,7 @@ $('save').addEventListener('click', async () => {
   const settings = {
     enabled: $('enabled').checked,
     runAt,
-    pageVersion: 'v2',
+    pageVersion: $('pageVersion')?.value || 'v2',
     fromTime: $('fromTime').value,
     toTime: $('toTime').value,
     timezone: 'Asia/Kolkata',
@@ -89,7 +92,7 @@ $('test').addEventListener('click', async () => {
   try {
     const [tab] = await ext.tabs.query({ active: true, lastFocusedWindow: true });
     if (!tab?.id || !isCamuLeavePage(tab.url)) {
-      $('status').textContent = 'Open the CAMU Leave Management page (v2) first.';
+      $('status').textContent = 'Open the CAMU Leave Management page (v1 or v2) first.';
       return;
     }
     await ensureContentScript(tab.id);
@@ -106,10 +109,11 @@ $('runNow').addEventListener('click', async () => {
   $('status').textContent = 'Starting background automation…';
   try {
     const { settings = {} } = await ext.storage.local.get('settings');
+    const pageVersion = $('pageVersion')?.value || settings.pageVersion || 'v2';
     await ext.storage.local.set({
       settings: {
         ...settings,
-        pageVersion: 'v2',
+        pageVersion,
         fromTime: $('fromTime').value || '06:00',
         toTime: $('toTime').value || '20:00',
       },

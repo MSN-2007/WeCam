@@ -48,6 +48,7 @@
   "content_scripts": [
     {
       "matches": [
+        "https://student.camu.in/v1/leaveManagement*",
         "https://student.camu.in/v2/leaveManagement*"
       ],
       "js": [

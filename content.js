@@ -8,7 +8,7 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
   /* ─── CAMU DOM Adapter ──────────────────────────────────────────────
    * Selector / label matching is intentionally isolated here so it can be
    * updated if CAMU changes its UI without touching any other file.
-   * Supports CAMU v2 (/v2/leaveManagement).
+   * Supports CAMU v1 and v2 (/v1/leaveManagement and /v2/leaveManagement).
    * ─────────────────────────────────────────────────────────────────── */
 
   // ─── Utilities ──────────────────────────────────────────────────────
@@ -41,7 +41,9 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
       const html = e.outerHTML || '';
       return !/back|arrow-left|chevron-left|fa-arrow/i.test(cls + ' ' + html);
     });
-    return filtered[0] || candidates[0] || null;
+    if (filtered[0] || candidates[0]) return filtered[0] || candidates[0];
+
+    return findButton(['Apply']);
   }
 
   function isFormAlreadyOpen() {

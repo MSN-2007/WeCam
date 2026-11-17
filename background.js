@@ -1,7 +1,10 @@
 const ext = typeof browser !== 'undefined' ? browser : chrome;
 const ALARM = 'camu-autopass-check';
-const CAMU_V2_URL = 'https://student.camu.in/v2/leaveManagement';
-const pageUrl = () => CAMU_V2_URL;
+const PAGES = {
+  v1: 'https://student.camu.in/v1/leaveManagement',
+  v2: 'https://student.camu.in/v2/leaveManagement',
+};
+const pageUrl = (settings) => PAGES[settings?.pageVersion] || PAGES.v2;
 const TZ = 'Asia/Kolkata';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -112,12 +115,12 @@ ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
   if (msg?.type === 'TRIGGER_BACKGROUND_RUN') {
     (async () => {
-      const { running = false } = await ext.storage.local.get('running');
+      const { running = false, settings = {} } = await ext.storage.local.get(['running', 'settings']);
       if (running) {
         throw new Error('An automation run is already in progress.');
       }
       await ext.storage.local.set({ running: true, runManualTrigger: !!msg.manual });
-      const tab = await ext.tabs.create({ url: pageUrl(), active: false });
+      const tab = await ext.tabs.create({ url: pageUrl(settings), active: false });
       await ext.storage.local.set({ automationTabId: tab.id });
     })()
       .then(() => sendResponse({ ok: true }))
@@ -158,7 +161,7 @@ ext.alarms.onAlarm.addListener(async (alarm) => {
 
   // Mark before executing so repeated alarm ticks cannot launch duplicate runs.
   await ext.storage.local.set({ lastAttemptTuesday: key, running: true, runManualTrigger: false });
-  const tab = await ext.tabs.create({ url: pageUrl(), active: false });
+  const tab = await ext.tabs.create({ url: pageUrl(settings), active: false });
   await ext.storage.local.set({ automationTabId: tab.id });
 });
 
