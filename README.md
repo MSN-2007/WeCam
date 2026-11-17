@@ -10,8 +10,8 @@ You can download the pre-packaged extension ZIP directly from the GitHub Release
 
 | Release | Compatibility | Direct Download |
 | :--- | :--- | :--- |
-| **v3.6.0 (Chrome)** | **Chrome, Edge, Brave, Opera** (Native Backend Connect & Auto-Close) | [Download camu-autopass-chrome-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-chrome-v3.6.0.zip) |
-| **v3.6.0 (Firefox)** | **Firefox, Zen, LibreWolf, Floorp** (Gecko MV3) | [Download camu-autopass-firefox-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-firefox-v3.6.0.zip) |
+| **v3.6.0 (Chrome)** | **Chrome, Edge, Brave, Opera** (Native Background Connect & Auto-Close) | [Download camu-autopass-chrome-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-chrome-v3.6.0.zip) |
+| **v3.6.0 (Firefox)** | **Firefox, Zen, LibreWolf, Floorp** (Gecko MV3 Event Page) | [Download camu-autopass-firefox-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-firefox-v3.6.0.zip) |
 | **v3.6.0 (Universal)** | **All Browsers** (Chrome, Firefox, Safari) | [Download camu-autopass-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-v3.6.0.zip) |
 | **v3.5.0 (Cross-Browser)** | **Chrome, Firefox, Safari** (Pre-Native Connect) | [Download camu-autopass-v3.5.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.5.0/camu-autopass-v3.5.0.zip) |
 | **v3.4.0 (Pre-Firefox)** | **Chrome only** (Original MV3) | [Download camu-autopass-v3.4.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.4.0/camu-autopass-v3.4.0.zip) |
@@ -21,92 +21,136 @@ All releases with changelogs and assets are available on the [GitHub Releases pa
 ---
 
 ## Defaults
-- Time zone: Asia/Kolkata
-- Allowed execution day/window: Tuesday, 09:00–23:00
-- Scheduler default: Tuesday 09:05
-- Supported CAMU page version: **v2** (`https://student.camu.in/v2/leaveManagement`)
-- Daily leave and gate-pass timing: 06:00–20:00 (same day for each application)
-- Leave type: Leave (fixed; CAMU dropdown option)
-- Gate pass type: Weekend (`Week End Gate Pass` / `Weekend`)
-- Gate pass reason: Weekend outing
-- No documents uploaded
+- **Time zone**: Asia/Kolkata
+- **Allowed execution window**: Tuesday, 09:00–23:00
+- **Scheduler default**: Tuesday 09:05
+- **Target portal**: `https://student.camu.in/v2/leaveManagement`
+- **Daily leave & gate-pass timing**: 06:00–20:00 (same day for each application)
+- **Leave type**: Leave (fixed; CAMU dropdown option)
+- **Gate pass type**: Weekend (`Week End Gate Pass` / `Weekend`)
+- **Gate pass reason**: Weekend outing
+- **Documents uploaded**: None
 
 ---
 
 ## Installation Guide
 
 ### Chrome & Chromium-based Browsers (Chrome, Brave, Edge, Opera, Vivaldi)
-1. **Download the ZIP**: Download `camu-autopass-v3.5.0.zip` (or `v3.4.0.zip`) from the table above and extract it into a folder.
+1. **Download the ZIP**: Download `camu-autopass-chrome-v3.6.0.zip` (or `camu-autopass-v3.6.0.zip`) from the table above and extract it into a folder.
 2. Open `chrome://extensions` in your browser.
-3. Enable **Developer mode** (toggle located in the upper-right corner).
-4. Click **Load unpacked** and select the unzipped extension folder.
+3. Enable **Developer mode** (toggle in the upper-right corner).
+4. Click **Load unpacked** and select the unzipped extension directory.
 5. Sign in to CAMU in the same Chrome profile.
-6. Click the extension icon in your toolbar, select your CAMU page version (`v1` or `v2`), and save your desired settings.
+6. Click the extension icon in your toolbar, configure your schedule, and click **Save settings**.
 
 ### Firefox & Firefox-based Browsers (Firefox, LibreWolf, Zen, Waterfox, Floorp)
-1. **Download the ZIP**: Download `camu-autopass-v3.5.0.zip` from the table above and extract it into a folder.
+1. **Download the ZIP**: Download `camu-autopass-firefox-v3.6.0.zip` (or `camu-autopass-v3.6.0.zip`) from the table above and extract it into a folder.
 2. Open `about:debugging` in Firefox.
 3. Click on **This Firefox** in the left sidebar.
 4. Under the **Temporary Extensions** section, click **Load Temporary Add-on…**.
 5. Select the `manifest.json` file inside the unzipped folder.
 6. Sign in to CAMU in the same Firefox profile.
-7. Click the extension icon in your toolbar, select your CAMU page version (`v1` or `v2`), and save your desired settings.
+7. Click the extension icon in your toolbar, configure your schedule, and click **Save settings**.
 
 ### Safari (macOS & iOS)
 Safari uses Apple's native App Extension wrapper. A pre-configured Xcode project is included in `safari/CAMU AutoPass/`:
 
 1. Open Safari -> **Settings** (or **Preferences**) -> **Advanced** tab -> Check **Show features for web developers**.
-2. In Safari's menu bar, open **Develop** -> Check **Allow Unsigned Extensions** (enter your macOS password when prompted).
+2. In Safari's menu bar, open **Develop** -> Check **Allow Unsigned Extensions** (enter macOS password when prompted).
 3. Open and run the project:
    ```bash
    open "safari/CAMU AutoPass/CAMU AutoPass.xcodeproj"
    ```
-   Or build from the terminal using the included helper script:
+   Or build from the terminal using the helper script:
    ```bash
    ./scripts/build-safari.sh
    ```
 4. In Xcode, select the **CAMU AutoPass (macOS)** scheme and press **Run** (`Cmd + R`).
 5. In Safari, open **Settings** -> **Extensions** and check the box next to **CAMU AutoPass**.
 6. When prompted, select **Always Allow on Every Website** (or grant permissions for `student.camu.in`).
-7. Sign in to CAMU and open the popup from your Safari toolbar!
+7. Sign in to CAMU and access the extension from the Safari toolbar!
 
 ---
 
-The browser must be running and the computer awake during the Tuesday execution window for scheduled runs. The extension also includes a **Run now** button: click Run now anytime to trigger silent background automation to start the same three-day workflow immediately. Manual runs calculate the next full Friday–Sunday weekend.
+## Execution Modes & Behavior
 
-## Important: CAMU selector calibration & multi-version support
-The extension supports both CAMU portal versions:
-- **v1**: `https://student.camu.in/v1/leaveManagement`
-- **v2**: `https://student.camu.in/v2/leaveManagement`
+### 1. Tuesday Scheduled Automation
+- The extension registers an alarm via `chrome.alarms` checking once every minute.
+- Runs exclusively on **Tuesday** between **09:00 and 23:00 Asia/Kolkata**, at or after the configured start time (default `09:05`).
+- The browser must be running and the machine awake during the execution window.
+- When triggered, it opens a non-active background tab (`active: false`), completes all three applications, records history, and automatically closes the tab.
+- To prevent duplicate runs, it records `lastAttemptTuesday` per date.
 
-Before enabling automatic Save, navigate to your institution's Leave Management page (v1 or v2), choose the matching **CAMU page version** in the extension popup, use the **Test page detection** button, and inspect `content.js` if any field is not detected. The DOM adapter supports both standard native inputs and modern React-Select / react-datetime widgets.
+### 2. Manual "Run now" Trigger
+- Clicking **Run now** from the popup initiates the full three-day workflow immediately in a background tab without requiring CAMU to be already open in your foreground tab.
+- Manual runs calculate the upcoming Friday–Sunday weekend dynamically.
+- The tab executes silently and automatically closes upon completion or failure.
 
-Important: CAMU is understood to accept applications only Thursday 09:00–23:00. Run now bypasses the extension scheduler restriction, but it cannot bypass CAMU server-side restrictions; if clicked outside CAMU’s permitted window, CAMU may reject the application. Use it during the Tuesday window for actual submissions. The extension does not store your CAMU password, bypass authentication, or bypass CAPTCHA/MFA. It relies on your existing logged-in session. It clicks Save automatically after filling the form. Test with automation disabled first.
+### 3. Page Detection Test
+- Use the **Test page detection (no submission)** button to verify that all form elements (Leave Type, Date inputs, Gate Pass checkbox, Gate Pass Type, Time inputs, and Save button) are properly discovered on the active CAMU page without submitting any data.
 
-## Scheduling notes
-Alarms are not exact-to-the-minute guarantees. The worker checks every minute and starts at/after the configured time, but only on Tuesday and only before 23:00 Asia/Kolkata. If the browser is closed or the laptop is asleep, automation cannot run. A missed Tuesday is not replayed.
+---
 
-## Monthly activity
-Stores the latest run result and current execution state in extension storage. Monthly history is displayed in the popup.
+## 🔍 How Form Filling & Verification Works
 
-V1.5 note: If CAMU is reached through in-app/SPA navigation, the content script may not be injected by the initial URL matching. The popup checks for the content script and injects it into the active Leave Management tab when needed (requires the scripting permission).
+The extension applies strict, defensive validation to prevent partial or erroneous submissions:
 
-V1.6 fixes a malformed regular expression in content.js that prevented the entire content script from parsing. It also waits for the injected script's PING response before sending detection or run messages, and reports injection errors more clearly.
+```mermaid
+flowchart TD
+    A["Locate Label (Leave Type / Gate Pass Type)"] --> B["findDropdownAfterLabel()<br/>Strict Document Position Following"]
+    B --> C["readDropdownValue()<br/>Inspect .rs-option__single-value / container"]
+    C --> D{"Matches target value?"}
+    D -- "Already selected (e.g. 'Leave')" --> E["Proceed without redundant click"]
+    D -- "Not selected" --> F["Multi-Event Open<br/>(MouseDown, Indicator Arrow, ArrowDown)"]
+    F --> G["Find & Click Target Option"]
+    G --> H["Post-Selection Assertion<br/>Verify value is retained"]
+    H -- "Failed / Empty" --> I["Abort execution<br/>No form submitted"]
+    H -- "Verified" --> J["Set Dates, Times, Reasons"]
+    J --> K["Validate Form Inputs<br/>clockMinutes() check"]
+    K --> L["Click Save & Await Response"]
+    L --> M["Scan Page Text<br/>(submitted / duplicate / unverified)"]
+```
 
-## V3.5 Cross-Browser Compatibility (Chrome, Firefox & Safari) & Multi-Version (v1 + v2) Support
-- **Unified Extension API (`browser` / `chrome`):** Handles Promise resolution transparently across Firefox's native Promise-based `browser.*` namespace, Chrome's Manifest V3 `chrome.*` namespace, and Apple Safari's WebExtension APIs.
-- **Dual Portal Version Support:** Automatically matches and injects into both `https://student.camu.in/v1/leaveManagement*` and `https://student.camu.in/v2/leaveManagement*`.
-- **Configurable Scheduler Page Version:** Easily choose whether Thursday scheduled runs launch the `v1` or `v2` portal.
-- **Safari Web Extension App Wrapper:** Includes a native macOS/iOS Xcode project (`safari/CAMU AutoPass/`) and build script (`scripts/build-safari.sh`) using Apple's official WebExtension specifications.
-- **Dual Background Dispatch:** Configures `background.scripts` for Firefox/Safari event pages alongside `background.service_worker` for Chromium service workers.
-- **Browser-Specific Manifest Settings:** Configured `browser_specific_settings.gecko` (ID `camu-autopass@wecam.addon`, `strict_min_version: 142.0`) and `browser_specific_settings.safari` (`strict_min_version: 15.4`).
-- **Standardized Extension Icons:** High-resolution icons (16px to 1024px) for browser toolbars, Safari extension tabs, and App Store metadata.
-- **Safe DOM Injection:** Replaced dynamic `innerHTML` rendering in the history view with sanitized DOM creation methods (`replaceChildren` and `textContent`), adhering to Mozilla and Apple add-on security policies.
-- **Automated Release Workflow:** GitHub Actions release workflow packages and attaches extension ZIP binaries to GitHub Releases automatically.
+### 1. Dropdown Scoping & Multi-Selection Calibration
+- **Forward-Only Target Discovery (`findDropdownAfterLabel`)**: Uses DOM relative position ordering (`Node.DOCUMENT_POSITION_FOLLOWING`). This guarantees that `Gate Pass Type` resolves strictly to the dropdown control rendered *after* its label, eliminating cross-field collisions with preceding `Leave Type` controls.
+- **Direct Dropdown Reading (`readDropdownValue`)**: Extracts text directly from React-Select's `.rs-option__single-value`, `.rs-option__value-container`, or native inputs, disregarding placeholder strings (`"select"` / `""`).
+- **Pre-Selected Option Pass-Through**: If CAMU already pre-selects the expected default (e.g., `"Leave"`), the extension avoids unnecessary clicks that might deselect or fail to find options in dynamic menus.
+- **Multi-Trigger Menu Opening**: If an option needs selection, the script fires a sequenced series of events (mouse events on control, click on indicator arrows, input focus, and keyboard `ArrowDown`) to ensure menus open reliably across all browser engines.
 
-## Single-Click Workflow & Multi-Dropdown Calibration
-- **Forward-Only Target Discovery (`findDropdownAfterLabel`)**: Uses DOM relative position ordering (`Node.DOCUMENT_POSITION_FOLLOWING`) to ensure that dropdown lookups strictly resolve to the control that appears **after** the corresponding label. This completely eliminates cross-field interference where `Gate Pass Type` accidentally targeted the preceding `Leave Type` control.
-- **Scoped Dropdown Reading (`readDropdownValue`)**: Reads the active selection directly from the target control's single-value node, value container, or input, without bleeding across other form elements.
-- **Pre-Selected Option Pass-Through**: Detects when CAMU has already initialized a dropdown with the desired default (such as `"Leave"` on form open), seamlessly proceeding without redundant clicks that could deselect or trigger false verification errors.
-- **Multi-Trigger React-Select Menu Opening**: Deploys a comprehensive event dispatching sequence (control mouse events, indicator arrow clicks, input focus, and keyboard `ArrowDown`) to guarantee that dynamic React-Select dropdowns (like `Gate Pass Type`) open and commit their options reliably on the very first run.
-- **Modal Lifecycle Awareness (`isFormAlreadyOpen`)**: Detects if the leave and gate-pass form modal is already open, avoiding accidental clicks on top-level headers or back buttons (`<-- Apply Leave and Gate Pass`).
+### 2. Input Simulation & React State Synchronization
+- **Native Setter Dispatch**: Uses `Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set` to bypass React synthetic event suppression when entering dates and reasons.
+- **Semantic Time Validation (`clockMinutes`)**: Formats and parses `06:00` and `20:00` into minutes from midnight, asserting that CAMU's time inputs (`Frtm`, `ToTm`) match the exact configured minutes. If mismatched, execution halts immediately before saving.
+
+### 3. Submission Verification
+- After clicking **Save**, the script pauses 2.5 seconds to await the network roundtrip and toast alerts.
+- Inspects `document.body.innerText` for success patterns (`submitted successfully`, `saved successfully`, `request submitted`) or duplicate notifications (`already applied`, `duplicate request`).
+
+---
+
+## 📊 State Tracking & Activity History
+
+```mermaid
+flowchart LR
+    A["Daily Application Completed"] --> B["ext.storage.local.set({ currentExecution })<br/>(In-Flight Progress)"]
+    B --> C["ext.runtime.sendMessage('RUN_FINISHED')"]
+    C --> D["background.js updates monthHistory<br/>in ext.storage.local"]
+    D --> E["popup.html renders monthly activity<br/>using safe DOM methods"]
+```
+
+1. **In-Flight Progress Tracking (`currentExecution`)**:
+   - Each submitted day (Friday, Saturday, Sunday) is incrementally written to `chrome.storage.local` under `currentExecution`.
+   - If an error occurs on Sunday, Friday and Saturday's recorded results are never lost.
+2. **Persistent Monthly History (`monthHistory`)**:
+   - Once all days finish, `content.js` sends `RUN_FINISHED` to `background.js`.
+   - `background.js` checks the active month (`Asia/Kolkata`) and appends results (e.g., `Friday – 2026-11-06: submitted`).
+   - History automatically rolls over upon entering a new calendar month.
+3. **Safe UI Rendering**:
+   - The popup renders historical entries using safe DOM methods (`replaceChildren` and `textContent`), preventing XSS risks and strictly adhering to Mozilla Add-on and Apple Safari security standards.
+
+---
+
+## 🛡️ Security & Privacy
+- **Zero Credential Storage**: The extension never prompts for, reads, or stores your CAMU password. It functions strictly inside your existing authenticated session.
+- **No CAPTCHA / 2FA Bypass**: Relies entirely on your legitimate active login.
+- **Sanitized DOM Injection**: No `innerHTML` or dynamic script evaluation. All content manipulation follows strict browser extension store compliance.
+- **Local Data Only**: All configurations and history logs remain exclusively inside your browser's local extension storage (`chrome.storage.local`).
