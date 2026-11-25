@@ -1,6 +1,6 @@
 # CAMU AutoPass – Version 1 (V3.6)
 
-A cross-browser Manifest V3 extension (Chrome, Firefox, Safari, and Chromium/Gecko/WebKit-based browsers) for Tuesday-only automation of **three separate daily applications** (Friday, Saturday, Sunday). Each daily form includes the Weekend leave and the integrated Weekend gate pass, so the expected total is **three form submissions**, not six.
+A cross-browser Manifest V3 extension (Chrome, Firefox, Safari, and Chromium/Gecko/WebKit-based browsers) for scheduled (Tuesday or Thursday) automation of **three separate daily applications** (Friday, Saturday, Sunday). Each daily form includes the Weekend leave and the integrated Weekend gate pass, so the expected total is **three form submissions**, not six.
 
 ---
 
@@ -22,12 +22,12 @@ All releases with changelogs and assets are available on the [GitHub Releases pa
 
 ## Defaults
 - **Time zone**: Asia/Kolkata
-- **Allowed execution window**: Tuesday, 09:00–23:00
+- **Allowed execution window**: Selected schedule day (**Tuesday** or **Thursday**), 09:00–23:00
 - **Scheduler default**: Tuesday 09:05
-- **Target portal**: `https://student.camu.in/v2/leaveManagement`
+- **Target portal**: `https://student.camu.in/v2/leaveManagement` (v1 also supported via popup selector)
 - **Daily leave & gate-pass timing**: 06:00–20:00 (same day for each application)
 - **Leave type**: Leave (fixed; CAMU dropdown option)
-- **Gate pass type**: Weekend (`Week End Gate Pass` / `Weekend`)
+- **Gate pass type**: `Week End Gate Pass`
 - **Gate pass reason**: Weekend outing
 - **Documents uploaded**: None
 
@@ -74,12 +74,12 @@ Safari uses Apple's native App Extension wrapper. A pre-configured Xcode project
 
 ## Execution Modes & Behavior
 
-### 1. Tuesday Scheduled Automation
+### 1. Scheduled Automation (Tuesday or Thursday)
 - The extension registers an alarm via `chrome.alarms` checking once every minute.
-- Runs exclusively on **Tuesday** between **09:00 and 23:00 Asia/Kolkata**, at or after the configured start time (default `09:05`).
+- Runs on the selected schedule day (**Tuesday** or **Thursday**, configurable in the popup) between **09:00 and 23:00 Asia/Kolkata**, at or after the configured start time (default `09:05`).
 - The browser must be running and the machine awake during the execution window.
 - When triggered, it opens a non-active background tab (`active: false`), completes all three applications, records history, and automatically closes the tab.
-- To prevent duplicate runs, it records `lastAttemptTuesday` per date.
+- To prevent duplicate runs, it records `lastAttemptDate` per date.
 
 ### 2. Manual "Run now" Trigger
 - Clicking **Run now** from the popup initiates the full three-day workflow immediately in a background tab without requiring CAMU to be already open in your foreground tab.
@@ -115,7 +115,8 @@ flowchart TD
 - **Forward-Only Target Discovery (`findDropdownAfterLabel`)**: Uses DOM relative position ordering (`Node.DOCUMENT_POSITION_FOLLOWING`). This guarantees that `Gate Pass Type` resolves strictly to the dropdown control rendered *after* its label, eliminating cross-field collisions with preceding `Leave Type` controls.
 - **Direct Dropdown Reading (`readDropdownValue`)**: Extracts text directly from React-Select's `.rs-option__single-value`, `.rs-option__value-container`, or native inputs, disregarding placeholder strings (`"select"` / `""`).
 - **Pre-Selected Option Pass-Through**: If CAMU already pre-selects the expected default (e.g., `"Leave"`), the extension avoids unnecessary clicks that might deselect or fail to find options in dynamic menus.
-- **Multi-Trigger Menu Opening**: If an option needs selection, the script fires a sequenced series of events (mouse events on control, click on indicator arrows, input focus, and keyboard `ArrowDown`) to ensure menus open reliably across all browser engines.
+- **Multi-Trigger Menu Opening**: If an option needs selection, the script attempts step-by-step triggers (single click on control, click on indicator arrow, keyboard `ArrowDown`, and searchable input typing) and stops as soon as options appear, avoiding accidental double-toggle closures.
+- **Dropdown Failure Handling**: If a dropdown fails to open or match (for example, after a CAMU portal UI update), the run is marked **`failed`**. For the first 3 failed attempts, the popup prompts you to reload the extension and retry; after more than 3 consecutive failed attempts, it links directly to the [GitHub Releases page](https://github.com/MSN-2007/WeCam/releases) to check for updates. The failure counter resets automatically after a successful run.
 
 ### 2. Input Simulation & React State Synchronization
 - **Native Setter Dispatch**: Uses `Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set` to bypass React synthetic event suppression when entering dates and reasons.

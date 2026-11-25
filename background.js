@@ -50,6 +50,8 @@ async function closeAutomationTab() {
   }
 }
 
+const REPO_RELEASES_URL = 'https://github.com/MSN-2007/WeCam/releases';
+
 async function recordRunFinished(result) {
   await closeAutomationTab();
   const now = new Date();
@@ -60,18 +62,45 @@ async function recordRunFinished(result) {
   })
     .format(now)
     .slice(0, 7);
-  const { monthHistory = [], historyMonth = '' } = await ext.storage.local.get([
-    'monthHistory',
-    'historyMonth',
-  ]);
+  const {
+    monthHistory = [],
+    historyMonth = '',
+    dropdownFailureCount = 0,
+  } = await ext.storage.local.get(['monthHistory', 'historyMonth', 'dropdownFailureCount']);
   const history = historyMonth === month ? monthHistory : [];
-  const entries = (result.results || []).map((x) => ({
+
+  let nextFailureCount = dropdownFailureCount;
+  const enrichedResult = { ...result };
+
+  if (result.reason === 'dropdown_failed') {
+    nextFailureCount = dropdownFailureCount + 1;
+    enrichedResult.status = 'failed';
+    enrichedResult.dropdownFailureCount = nextFailureCount;
+    enrichedResult.repoUrl = REPO_RELEASES_URL;
+    enrichedResult.userMessage =
+      nextFailureCount > 3
+        ? `Dropdown failed to open (${nextFailureCount} failed attempts). CAMU may have updated its UI — please check for the latest updates at ${REPO_RELEASES_URL}`
+        : `Dropdown failed to open (attempt ${nextFailureCount}/3). Please reload the extension and try again.`;
+  } else if (result.status === 'complete') {
+    nextFailureCount = 0;
+  }
+
+  const entries = (enrichedResult.results || []).map((x) => ({
     label: `${x.day || 'Application'} – ${x.date || ''}`,
-    status: x.status || result.status || 'unknown',
+    status: x.status || enrichedResult.status || 'unknown',
   }));
-  if (!entries.length) entries.push({ label: 'Automation run', status: result.status || 'error' });
+  if (!entries.length) {
+    entries.push({
+      label:
+        enrichedResult.reason === 'dropdown_failed'
+          ? `Dropdown failed (#${nextFailureCount})`
+          : 'Automation run',
+      status: enrichedResult.status || 'error',
+    });
+  }
   await ext.storage.local.set({
-    lastRunResult: result,
+    lastRunResult: enrichedResult,
+    dropdownFailureCount: nextFailureCount,
     running: false,
     monthHistory: [...history, ...entries],
     historyMonth: month,
@@ -149,18 +178,22 @@ ext.alarms.onAlarm.addListener(async (alarm) => {
   if (stored.historyMonth && stored.historyMonth !== month) {
     await ext.storage.local.set({ monthHistory: [], historyMonth: month });
   }
-  if (p.weekday !== 'Tue') return;
+  const targetDay = settings.runDay === 'Thu' ? 'Thu' : 'Tue';
+  if (p.weekday !== targetDay) return;
   const [hh, mm] = (settings.runAt || '09:05').split(':').map(Number);
   const nowMin = Number(p.hour) * 60 + Number(p.minute);
   const target = hh * 60 + mm;
   if (nowMin < 9 * 60 || nowMin > 23 * 60 || nowMin < target) return;
 
   const key = scheduleDateKey(p);
-  const { lastAttemptTuesday } = await ext.storage.local.get('lastAttemptTuesday');
-  if (lastAttemptTuesday === key) return;
+  const { lastAttemptDate, lastAttemptTuesday } = await ext.storage.local.get([
+    'lastAttemptDate',
+    'lastAttemptTuesday',
+  ]);
+  if (lastAttemptDate === key || lastAttemptTuesday === key) return;
 
   // Mark before executing so repeated alarm ticks cannot launch duplicate runs.
-  await ext.storage.local.set({ lastAttemptTuesday: key, running: true, runManualTrigger: false });
+  await ext.storage.local.set({ lastAttemptDate: key, running: true, runManualTrigger: false });
   const tab = await ext.tabs.create({ url: pageUrl(settings), active: false });
   await ext.storage.local.set({ automationTabId: tab.id });
 });

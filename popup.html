@@ -28,13 +28,20 @@
     <label class="toggle">
       <span>
         <b>Automation enabled</b>
-        <small>Scheduled run on Tuesday; manual run available anytime</small>
+        <small id="scheduleHint">Scheduled run on Tuesday; manual run available anytime</small>
       </span>
       <input id="enabled" type="checkbox">
     </label>
 
     <section>
-      <h2>Tuesday schedule</h2>
+      <h2 id="scheduleHeading">Tuesday schedule</h2>
+      <label>
+        Schedule day
+        <select id="runDay">
+          <option value="Tue">Tuesday</option>
+          <option value="Thu">Thursday</option>
+        </select>
+      </label>
       <label>
         Start time (9:00 AM–11:00 PM)
         <input id="runAt" type="time" min="09:00" max="23:00" value="09:05">
@@ -61,7 +68,7 @@
       <h2>Fixed application details</h2>
       <div class="fixed">
         <span>Leave type</span><b>Leave</b>
-        <span>Gate pass type</span><b>Weekend</b>
+        <span>Gate pass type</span><b>Week End Gate Pass</b>
         <span>Gate pass reason</span><b>Weekend outing</b>
         <span>Documents</span><b>None</b>
       </div>

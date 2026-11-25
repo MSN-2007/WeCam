@@ -98,6 +98,38 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
 
   // ─── Robust React-Select & Custom Dropdown Handler ──────────────────
 
+  const compact = (s) => norm(s).replace(/[\s\-_]+/g, '');
+
+  const DROPDOWN_SELECTOR = [
+    'select',
+    '.rs-option__control',
+    '[class*="__control"]',
+    '[class*="-control"]',
+    '[role="combobox"]',
+    '[aria-haspopup="listbox"]',
+    '.ng-select-container',
+    '.ui-select-container',
+    '.ant-select-selector',
+    '.MuiSelect-select',
+    '.p-dropdown',
+    '.dropdown-toggle',
+    '.select-wrapper',
+  ].join(', ');
+
+  const OPTION_SELECTOR = [
+    '.rs-option__option',
+    '[role="option"]',
+    '[id*="-option-"]',
+    '[class*="-option"]',
+    '.ng-option',
+    '.ui-select-choices-row',
+    '.ant-select-item-option',
+    '.MuiMenuItem-root',
+    '.p-dropdown-item',
+    '.dropdown-menu .dropdown-item',
+    '.dropdown-menu li',
+  ].join(', ');
+
   /**
    * Checks whether a value string non-trivially matches any item in wantedList.
    */
@@ -105,10 +137,48 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     if (!val || typeof val !== 'string') return false;
     const n = norm(val);
     if (!n || n === 'select' || n === 'select...') return false;
+    const cn = compact(val);
     return wantedList.some((w) => {
       const nw = norm(w);
-      return nw && (n === nw || n.includes(nw) || nw.includes(n));
+      const cw = compact(w);
+      return (nw && (n === nw || n.includes(nw))) || (cw && (cn === cw || cn.includes(cw)));
     });
+  }
+
+  /**
+   * Picks the best matching item from a list using strict priority:
+   * exact desired -> exact alias -> compact exact -> contains desired -> contains alias.
+   */
+  function findBestMatch(items, getText, desired, wanted) {
+    const nd = norm(desired);
+    const cd = compact(desired);
+    const nonPlaceholder = (el) => {
+      const n = norm(getText(el));
+      return n && n !== 'select' && n !== 'select...';
+    };
+    const valid = items.filter(nonPlaceholder);
+
+    return (
+      valid.find((el) => norm(getText(el)) === nd) ||
+      valid.find((el) => compact(getText(el)) === cd) ||
+      valid.find((el) => wanted.some((w) => norm(getText(el)) === norm(w) || compact(getText(el)) === compact(w))) ||
+      valid.find((el) => norm(getText(el)).includes(nd) || compact(getText(el)).includes(cd)) ||
+      valid.find((el) => matchesWanted(getText(el), wanted)) ||
+      null
+    );
+  }
+
+  function extractControl(el) {
+    if (!el || !visible(el)) return null;
+    if (el.tagName === 'SELECT') return el;
+    const innerSelect = el.querySelector?.('select');
+    if (innerSelect && visible(innerSelect)) return innerSelect;
+    const innerSpecific = el.querySelector?.('.rs-option__control, [class*="__control"], [class*="-control"], [role="combobox"], [aria-haspopup="listbox"]');
+    if (innerSpecific && visible(innerSpecific)) return innerSpecific;
+    if (el.matches?.(DROPDOWN_SELECTOR)) return el;
+    const inside = el.querySelector?.(DROPDOWN_SELECTOR);
+    if (inside && visible(inside)) return inside;
+    return null;
   }
 
   /**
@@ -123,22 +193,21 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     if (id) {
       const target = document.getElementById(id);
       if (target) {
-        if (target.tagName === 'SELECT') return target;
-        const ctrl = target.closest('.rs-option__control, [class*="control" i]');
-        if (ctrl) return ctrl;
+        if (target.tagName === 'SELECT' && visible(target)) return target;
+        const ctrl = target.closest(DROPDOWN_SELECTOR) || target.closest('[class*="control" i]');
+        if (ctrl && visible(ctrl)) return ctrl;
       }
     }
 
     // 2. Look for the next siblings of label
     let sib = l.nextElementSibling;
     while (sib) {
-      if (sib.matches?.('select, .rs-option__control, [class*="control" i]')) return sib;
-      const inside = sib.querySelector?.('select, .rs-option__control, [class*="control" i]');
-      if (inside) return inside;
+      const found = extractControl(sib);
+      if (found) return found;
       sib = sib.nextElementSibling;
     }
 
-    // 3. Look in parent, but only among elements appearing after l
+    // 3. Look in parent (and parent's next sibling if label is wrapped in its own container)
     const parent = l.parentElement;
     if (parent) {
       let passedL = false;
@@ -148,19 +217,22 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
           continue;
         }
         if (passedL) {
-          if (child.matches?.('select, .rs-option__control, [class*="control" i]')) return child;
-          const inside = child.querySelector?.('select, .rs-option__control, [class*="control" i]');
-          if (inside) return inside;
+          const found = extractControl(child);
+          if (found) return found;
         }
+      }
+      if (parent.nextElementSibling) {
+        const found = extractControl(parent.nextElementSibling);
+        if (found) return found;
       }
     }
 
     // 4. In document order: find all controls on the page and pick the first one that is strictly AFTER l
-    const allControls = [
-      ...document.querySelectorAll('select, .rs-option__control, [class*="__control"], .select-wrapper'),
-    ].filter(visible);
+    const allControls = [...document.querySelectorAll(DROPDOWN_SELECTOR)].filter(visible);
     const afterL = allControls.find((ctrl) => (l.compareDocumentPosition(ctrl) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0);
-    if (afterL) return afterL;
+    if (afterL) {
+      return extractControl(afterL) || afterL;
+    }
 
     return null;
   }
@@ -224,7 +296,9 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     // Find the exact control that belongs to THIS label (strictly after l)
     const control = findDropdownAfterLabel(l);
     if (!control) {
-      throw new Error(`Could not locate the dropdown control for "${label}".`);
+      const err = new Error(`Could not locate the dropdown control for "${label}".`);
+      err.code = 'DROPDOWN_OPEN_FAILED';
+      throw err;
     }
 
     // 1. Check if desired value is ALREADY displayed!
@@ -235,17 +309,26 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
 
     // 2. If it's a native <select>
     if (control.tagName === 'SELECT') {
-      const opt = [...control.options].find((o) => matchesWanted(o.textContent, wanted));
+      // Wait briefly if options are still loading asynchronously
+      const waitStart = Date.now();
+      while (control.options.length <= 1 && Date.now() - waitStart < 3000) {
+        await sleep(150);
+      }
+      const opt = findBestMatch([...control.options], (o) => o.textContent, desired, wanted);
       if (!opt) {
-        throw new Error(
+        const err = new Error(
           `Dropdown "${label}" has no "${desired}" option. Available: ${[...control.options].map((o) => o.textContent.trim()).join(', ')}`
         );
+        err.code = 'DROPDOWN_OPEN_FAILED';
+        throw err;
       }
+      opt.selected = true;
       setValue(control, opt.value);
+      control.dispatchEvent(new Event('blur', { bubbles: true }));
       return true;
     }
 
-    // 3. React-Select control
+    // 3. React-Select or custom dropdown control
     const input = control.querySelector('input');
 
     control.scrollIntoView({ block: 'center', behavior: 'instant' });
@@ -264,73 +347,69 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
         new MouseEvent('click', { bubbles: true, cancelable: true, view: window, button: 0, buttons: 0 })
       );
 
-    const readOptions = () =>
-      [
-        ...document.querySelectorAll(
-          '.rs-option__option, [role="option"], [id*="-option-"]'
-        ),
-      ].filter(visible);
+    const clickTarget = async (target, waitMs = 250) => {
+      mouseDown(target);
+      await sleep(60);
+      mouseUp(target);
+      click(target);
+      await sleep(waitMs);
+    };
 
-    // Sequence 1: Double mousedown & click on control
-    mouseDown(control);
-    await sleep(80);
-    mouseUp(control);
-    click(control);
-    await sleep(100);
+    const readOptions = () => {
+      const raw = [...document.querySelectorAll(OPTION_SELECTOR)].filter(
+        (el) => visible(el) && !el.contains(control) && el !== control
+      );
+      // Exclude container elements that wrap other matched option elements
+      return raw.filter((el) => !raw.some((other) => other !== el && el.contains(other)));
+    };
 
-    if (input) {
-      input.focus();
-      mouseDown(input);
-      await sleep(80);
-      mouseUp(input);
-      click(input);
-    }
+    const waitForOptions = async (timeout = 600) => {
+      const start = Date.now();
+      while (Date.now() - start < timeout) {
+        const opts = readOptions().filter((o) => !/^(loading|no options)/i.test(textOf(o)));
+        if (opts.length) return opts;
+        await sleep(100);
+      }
+      return readOptions();
+    };
 
-    mouseDown(control);
-    await sleep(80);
-    mouseUp(control);
-    click(control);
-    await sleep(300);
+    // Sequence 1: Single click on control to open (do NOT double-click, which toggles React-Select closed)
+    await clickTarget(control, 200);
+    let options = await waitForOptions(500);
 
-    let options = readOptions();
-
-    // Sequence 2: Click indicator arrow if needed
+    // Sequence 2: Click dropdown indicator / chevron if menu did not open
     if (!options.length) {
       const indicator = control.querySelector('.rs-option__dropdown-indicator, [class*="indicator" i], svg');
       if (indicator) {
-        mouseDown(indicator);
-        await sleep(80);
-        mouseUp(indicator);
-        click(indicator);
-        await sleep(350);
-        options = readOptions();
+        await clickTarget(indicator, 200);
+        options = await waitForOptions(500);
       }
     }
 
-    // Sequence 3: ArrowDown on input
-    if (!options.length && input) {
-      input.focus();
-      input.dispatchEvent(
+    // Sequence 3: Focus input (or control) and send ArrowDown
+    if (!options.length) {
+      const keyTarget = input || control;
+      keyTarget.focus?.();
+      keyTarget.dispatchEvent(
         new KeyboardEvent('keydown', { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40, which: 40, bubbles: true, cancelable: true })
       );
-      await sleep(400);
-      options = readOptions();
+      options = await waitForOptions(600);
     }
 
-    // Sequence 4: Type text into input
+    // Sequence 4: Type desired text into searchable input
     if (!options.length && input && input.tagName === 'INPUT') {
-      setValue(input, 'Week');
+      input.focus();
+      setValue(input, desired);
       input.dispatchEvent(
         new KeyboardEvent('keydown', { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40, which: 40, bubbles: true, cancelable: true })
       );
-      await sleep(400);
-      options = readOptions();
+      options = await waitForOptions(600);
     }
 
-    // Find matching option
-    let matchedOption = options.find((opt) => matchesWanted(textOf(opt), wanted));
-    if (!matchedOption && options.length > 0) {
-      matchedOption = options.find((opt) => /week|gate/i.test(textOf(opt)));
+    // Find best matching option (strict priority avoids matching unrelated options like "Gate Pass")
+    let matchedOption = findBestMatch(options, textOf, desired, wanted);
+    if (!matchedOption && options.length > 0 && /week/i.test(desired)) {
+      matchedOption = options.find((opt) => /week\s*-?\s*end/i.test(textOf(opt)));
     }
     if (!matchedOption && options.length === 1) {
       matchedOption = options[0];
@@ -338,12 +417,12 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
 
     if (matchedOption) {
       matchedOption.scrollIntoView({ block: 'nearest' });
-      mouseDown(matchedOption);
-      await sleep(80);
-      mouseUp(matchedOption);
-      click(matchedOption);
-      matchedOption.click();
-      await sleep(350);
+      await clickTarget(matchedOption, 250);
+      // Fallback if menu is still open after synthetic click
+      if (readOptions().length > 0) {
+        matchedOption.click();
+        await sleep(250);
+      }
     }
 
     // Verify
@@ -364,9 +443,11 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
 
     if (!matchedOption) {
       const visibleOpts = options.map((e) => norm(e.textContent)).filter(Boolean);
-      throw new Error(
+      const err = new Error(
         `Could not open/match "${desired}" in "${label}". Visible options: ${visibleOpts.join(' | ') || '(none)'}.`
       );
+      err.code = 'DROPDOWN_OPEN_FAILED';
+      throw err;
     }
 
     return true;
@@ -768,9 +849,11 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
             o[x.type] = x.value;
             return o;
           }, {});
+        const targetDay = settings.runDay === 'Thu' ? 'Thu' : 'Tue';
+        const targetDayName = targetDay === 'Thu' ? 'Thursday' : 'Tuesday';
         const minute = Number(p.hour) * 60 + Number(p.minute);
-        if (p.weekday !== 'Tue' || minute < 540 || minute > 1380) {
-          throw new Error('Outside the permitted Tuesday 09:00–23:00 window.');
+        if (p.weekday !== targetDay || minute < 540 || minute > 1380) {
+          throw new Error(`Outside the permitted ${targetDayName} 09:00–23:00 window.`);
         }
       }
       const dates = upcomingWeekend();
@@ -843,9 +926,15 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
           })
         )
         .catch(async (e) => {
+          const isDropdownFailure = e?.code === 'DROPDOWN_OPEN_FAILED';
           await ext.runtime.sendMessage({
             type: 'RUN_FINISHED',
-            result: { status: 'error', message: e.message, mode: manual ? 'manual' : 'scheduled' },
+            result: {
+              status: isDropdownFailure ? 'failed' : 'error',
+              reason: isDropdownFailure ? 'dropdown_failed' : 'error',
+              message: e.message,
+              mode: manual ? 'manual' : 'scheduled',
+            },
           });
           sendResponse({ ok: false, message: e.message });
         });
