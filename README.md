@@ -147,6 +147,8 @@ flowchart LR
    - History automatically rolls over upon entering a new calendar month.
 3. **Safe UI Rendering**:
    - The popup renders historical entries using safe DOM methods (`replaceChildren` and `textContent`), preventing XSS risks and strictly adhering to Mozilla Add-on and Apple Safari security standards.
+4. **Automatic Update Check**:
+   - Across all supported browsers (Chrome, Edge, Brave, Opera, Vivaldi, Helium, Firefox, and Safari), the popup checks the repository's latest `manifest.json` version (cached for 1 hour) and displays a download banner at the bottom whenever a newer version is pushed.
 
 ---
 

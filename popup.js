@@ -34,6 +34,99 @@ $('runDay')?.addEventListener('change', () => {
 });
 
 const REPO_RELEASES_URL = 'https://github.com/MSN-2007/WeCam/releases';
+const REMOTE_MANIFEST_URL = 'https://raw.githubusercontent.com/MSN-2007/WeCam/main/manifest.json';
+const REMOTE_RELEASE_API_URL = 'https://api.github.com/repos/MSN-2007/WeCam/releases/latest';
+const UPDATE_CHECK_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+function compareVersions(a, b) {
+  const pa = String(a || '').replace(/^v/i, '').split('.').map((n) => parseInt(n, 10) || 0);
+  const pb = String(b || '').replace(/^v/i, '').split('.').map((n) => parseInt(n, 10) || 0);
+  const len = Math.max(pa.length, pb.length);
+  for (let i = 0; i < len; i++) {
+    const diff = (pa[i] || 0) - (pb[i] || 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
+function createExternalLink(url, text) {
+  const link = document.createElement('a');
+  link.href = url;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.textContent = text;
+  link.addEventListener('click', (e) => {
+    if (ext.tabs?.create) {
+      e.preventDefault();
+      ext.tabs.create({ url });
+    }
+  });
+  return link;
+}
+
+function renderUpdateBanner(latestVersion, releaseUrl) {
+  const banner = $('updateBanner');
+  if (!banner) return;
+  const currentVersion = ext.runtime.getManifest?.()?.version || '0.0.0';
+  if (!latestVersion || compareVersions(latestVersion, currentVersion) <= 0) {
+    banner.hidden = true;
+    banner.replaceChildren();
+    return;
+  }
+  banner.replaceChildren();
+  banner.append(`New update available (v${latestVersion.replace(/^v/i, '')}) — please download the latest version: `);
+  banner.append(createExternalLink(releaseUrl || REPO_RELEASES_URL, 'Download update'));
+  banner.hidden = false;
+}
+
+async function fetchLatestVersion() {
+  try {
+    const res = await fetch(REMOTE_MANIFEST_URL, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.version) {
+        return { latestVersion: String(data.version).trim(), releaseUrl: REPO_RELEASES_URL };
+      }
+    }
+  } catch {
+    // Fall back to GitHub Releases API
+  }
+  try {
+    const res = await fetch(REMOTE_RELEASE_API_URL, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.tag_name) {
+        return {
+          latestVersion: String(data.tag_name).replace(/^v/i, '').trim(),
+          releaseUrl: data.html_url || REPO_RELEASES_URL,
+        };
+      }
+    }
+  } catch {
+    // Ignore offline / network errors silently
+  }
+  return null;
+}
+
+async function checkForUpdates() {
+  const { updateCheck = null } = await ext.storage.local.get('updateCheck');
+  if (updateCheck?.latestVersion) {
+    renderUpdateBanner(updateCheck.latestVersion, updateCheck.releaseUrl);
+    if (Date.now() - (updateCheck.checkedAt || 0) < UPDATE_CHECK_TTL_MS) {
+      return;
+    }
+  }
+  const fresh = await fetchLatestVersion();
+  if (!fresh) return;
+  await ext.storage.local.set({
+    updateCheck: {
+      checkedAt: Date.now(),
+      latestVersion: fresh.latestVersion,
+      releaseUrl: fresh.releaseUrl,
+    },
+  });
+  renderUpdateBanner(fresh.latestVersion, fresh.releaseUrl);
+}
 
 function renderLastRunStatus(lastRunResult) {
   const statusEl = $('status');
@@ -49,12 +142,7 @@ function renderLastRunStatus(lastRunResult) {
       statusEl.append(
         `Dropdown failed to open (${count} failed attempts). CAMU may have updated its UI — please check for the latest updates: `
       );
-      const link = document.createElement('a');
-      link.href = lastRunResult.repoUrl || REPO_RELEASES_URL;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.textContent = 'Check latest updates';
-      statusEl.append(link);
+      statusEl.append(createExternalLink(lastRunResult.repoUrl || REPO_RELEASES_URL, 'Check latest updates'));
     } else {
       statusEl.textContent = `Dropdown failed to open (attempt ${count}/3). Please reload the extension and try again.`;
     }
@@ -102,6 +190,7 @@ async function load() {
 
   renderHistory(monthHistory, historyMonth);
   renderLastRunStatus(lastRunResult);
+  checkForUpdates().catch(() => {});
 }
 
 ext.storage.onChanged.addListener((changes, area) => {

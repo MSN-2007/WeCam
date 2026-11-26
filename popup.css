@@ -255,6 +255,23 @@ footer {
   margin-top: 12px;
 }
 
+.update-banner {
+  margin-top: 10px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--pill-bg);
+  color: var(--pill-text);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.update-banner a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .history {
   font-size: 12px;
   color: var(--muted);
