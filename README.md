@@ -10,7 +10,7 @@ You can download the pre-packaged extension ZIP directly from the GitHub Release
 
 | Release | Compatibility | Direct Download |
 | :--- | :--- | :--- |
-| **v3.7.0 (Chrome)** | **Chrome, Edge, Brave, Opera** (Thursday/Tuesday Default, Week End Gate Pass Fix, Dropdown Failure Tracking) | [Download camu-autopass-chrome-v3.7.0.zip](https://github.com/MSN-2007/WeCam/releases/download/v3.7.0/camu-autopass-chrome-v3.7.0.zip) |
+| **v3.7.0 (Chrome)** | **Chrome, Edge, Brave, Opera, Helium** (Thursday/Tuesday Default, Week End Gate Pass Fix, Dropdown Failure Tracking) | [Download camu-autopass-chrome-v3.7.0.zip](https://github.com/MSN-2007/WeCam/releases/download/v3.7.0/camu-autopass-chrome-v3.7.0.zip) |
 | **v3.7.0 (Firefox)** | **Firefox, Zen, LibreWolf, Floorp** (Gecko MV3 Event Page) | [Download camu-autopass-firefox-v3.7.0.zip](https://github.com/MSN-2007/WeCam/releases/download/v3.7.0/camu-autopass-firefox-v3.7.0.zip) |
 | **v3.7.0 (Universal)** | **All Browsers** (Chrome, Firefox, Safari) | [Download camu-autopass-v3.7.0.zip](https://github.com/MSN-2007/WeCam/releases/download/v3.7.0/camu-autopass-v3.7.0.zip) |
 | **v3.6.0 (Chrome)** | **Chrome, Edge, Brave, Opera** (Native Background Connect & Auto-Close) | [Download camu-autopass-chrome-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-chrome-v3.6.0.zip) |
@@ -38,7 +38,7 @@ All releases with changelogs and assets are available on the [GitHub Releases pa
 
 ## Installation Guide
 
-### Chrome & Chromium-based Browsers (Chrome, Brave, Edge, Opera, Vivaldi)
+### Chrome & Chromium-based Browsers (Chrome, Brave, Edge, Opera, Vivaldi, Helium)
 1. **Download the ZIP**: Download `camu-autopass-chrome-v3.7.0.zip` (or `camu-autopass-v3.7.0.zip`) from the table above and extract it into a folder.
 2. Open `chrome://extensions` in your browser.
 3. Enable **Developer mode** (toggle in the upper-right corner).
