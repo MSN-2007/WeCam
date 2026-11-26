@@ -1,4 +1,4 @@
-# CAMU AutoPass – Version 1 (V3.6)
+# CAMU AutoPass – Version 1 (V3.7)
 
 A cross-browser Manifest V3 extension (Chrome, Firefox, Safari, and Chromium/Gecko/WebKit-based browsers) for scheduled (Tuesday or Thursday) automation of **three separate daily applications** (Friday, Saturday, Sunday). Each daily form includes the Weekend leave and the integrated Weekend gate pass, so the expected total is **three form submissions**, not six.
 
@@ -10,6 +10,9 @@ You can download the pre-packaged extension ZIP directly from the GitHub Release
 
 | Release | Compatibility | Direct Download |
 | :--- | :--- | :--- |
+| **v3.7.0 (Chrome)** | **Chrome, Edge, Brave, Opera** (Thursday/Tuesday Default, Week End Gate Pass Fix, Dropdown Failure Tracking) | [Download camu-autopass-chrome-v3.7.0.zip](https://github.com/MSN-2007/WeCam/releases/download/v3.7.0/camu-autopass-chrome-v3.7.0.zip) |
+| **v3.7.0 (Firefox)** | **Firefox, Zen, LibreWolf, Floorp** (Gecko MV3 Event Page) | [Download camu-autopass-firefox-v3.7.0.zip](https://github.com/MSN-2007/WeCam/releases/download/v3.7.0/camu-autopass-firefox-v3.7.0.zip) |
+| **v3.7.0 (Universal)** | **All Browsers** (Chrome, Firefox, Safari) | [Download camu-autopass-v3.7.0.zip](https://github.com/MSN-2007/WeCam/releases/download/v3.7.0/camu-autopass-v3.7.0.zip) |
 | **v3.6.0 (Chrome)** | **Chrome, Edge, Brave, Opera** (Native Background Connect & Auto-Close) | [Download camu-autopass-chrome-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-chrome-v3.6.0.zip) |
 | **v3.6.0 (Firefox)** | **Firefox, Zen, LibreWolf, Floorp** (Gecko MV3 Event Page) | [Download camu-autopass-firefox-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-firefox-v3.6.0.zip) |
 | **v3.6.0 (Universal)** | **All Browsers** (Chrome, Firefox, Safari) | [Download camu-autopass-v3.6.0.zip](https://github.com/Rish3666/WeCam/releases/download/v3.6.0/camu-autopass-v3.6.0.zip) |
@@ -22,8 +25,8 @@ All releases with changelogs and assets are available on the [GitHub Releases pa
 
 ## Defaults
 - **Time zone**: Asia/Kolkata
-- **Allowed execution window**: Selected schedule day (**Tuesday** or **Thursday**), 09:00–23:00
-- **Scheduler default**: Tuesday 09:05
+- **Allowed execution window**: Selected schedule day (**Thursday** or **Tuesday**), 09:00–23:00
+- **Scheduler default**: Thursday 09:05 (Automation enabled by default)
 - **Target portal**: `https://student.camu.in/v2/leaveManagement` (v1 also supported via popup selector)
 - **Daily leave & gate-pass timing**: 06:00–20:00 (same day for each application)
 - **Leave type**: Leave (fixed; CAMU dropdown option)
@@ -36,7 +39,7 @@ All releases with changelogs and assets are available on the [GitHub Releases pa
 ## Installation Guide
 
 ### Chrome & Chromium-based Browsers (Chrome, Brave, Edge, Opera, Vivaldi)
-1. **Download the ZIP**: Download `camu-autopass-chrome-v3.6.0.zip` (or `camu-autopass-v3.6.0.zip`) from the table above and extract it into a folder.
+1. **Download the ZIP**: Download `camu-autopass-chrome-v3.7.0.zip` (or `camu-autopass-v3.7.0.zip`) from the table above and extract it into a folder.
 2. Open `chrome://extensions` in your browser.
 3. Enable **Developer mode** (toggle in the upper-right corner).
 4. Click **Load unpacked** and select the unzipped extension directory.
@@ -44,7 +47,7 @@ All releases with changelogs and assets are available on the [GitHub Releases pa
 6. Click the extension icon in your toolbar, configure your schedule, and click **Save settings**.
 
 ### Firefox & Firefox-based Browsers (Firefox, LibreWolf, Zen, Waterfox, Floorp)
-1. **Download the ZIP**: Download `camu-autopass-firefox-v3.6.0.zip` (or `camu-autopass-v3.6.0.zip`) from the table above and extract it into a folder.
+1. **Download the ZIP**: Download `camu-autopass-firefox-v3.7.0.zip` (or `camu-autopass-v3.7.0.zip`) from the table above and extract it into a folder.
 2. Open `about:debugging` in Firefox.
 3. Click on **This Firefox** in the left sidebar.
 4. Under the **Temporary Extensions** section, click **Load Temporary Add-on…**.
@@ -85,9 +88,6 @@ Safari uses Apple's native App Extension wrapper. A pre-configured Xcode project
 - Clicking **Run now** from the popup initiates the full three-day workflow immediately in a background tab without requiring CAMU to be already open in your foreground tab.
 - Manual runs calculate the upcoming Friday–Sunday weekend dynamically.
 - The tab executes silently and automatically closes upon completion or failure.
-
-### 3. Page Detection Test
-- Use the **Test page detection (no submission)** button to verify that all form elements (Leave Type, Date inputs, Gate Pass checkbox, Gate Pass Type, Time inputs, and Save button) are properly discovered on the active CAMU page without submitting any data.
 
 ---
 

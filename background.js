@@ -171,14 +171,15 @@ ext.alarms.onAlarm.addListener(async (alarm) => {
     'settings',
     'running',
   ]);
-  if (!settings.enabled || running) return;
+  const isEnabled = settings.enabled !== undefined ? !!settings.enabled : true;
+  if (!isEnabled || running) return;
   const p = localParts();
   const month = `${p.year}-${p.month}`;
   const stored = await ext.storage.local.get(['historyMonth']);
   if (stored.historyMonth && stored.historyMonth !== month) {
     await ext.storage.local.set({ monthHistory: [], historyMonth: month });
   }
-  const targetDay = settings.runDay === 'Thu' ? 'Thu' : 'Tue';
+  const targetDay = settings.runDay === 'Tue' ? 'Tue' : 'Thu';
   if (p.weekday !== targetDay) return;
   const [hh, mm] = (settings.runAt || '09:05').split(':').map(Number);
   const nowMin = Number(p.hour) * 60 + Number(p.minute);

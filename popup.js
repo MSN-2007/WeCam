@@ -1,10 +1,6 @@
 const ext = typeof browser !== 'undefined' ? browser : chrome;
 const $ = (id) => document.getElementById(id);
 
-function isCamuLeavePage(url) {
-  return typeof url === 'string' && /^https:\/\/student\.camu\.in\/v[12]\/leaveManagement/.test(url);
-}
-
 function applyTheme(theme) {
   const selected = theme === 'light' ? 'light' : 'dark';
   document.documentElement.dataset.theme = selected;
@@ -24,7 +20,7 @@ const DAY_LABELS = {
 };
 
 function updateScheduleDayUI(dayCode) {
-  const code = dayCode === 'Thu' ? 'Thu' : 'Tue';
+  const code = dayCode === 'Tue' ? 'Tue' : 'Thu';
   const label = DAY_LABELS[code];
   if ($('runDay')) $('runDay').value = code;
   if ($('scheduleHeading')) $('scheduleHeading').textContent = `${label} schedule`;
@@ -95,8 +91,8 @@ async function load() {
   const { settings = {}, monthHistory = [], historyMonth = '', lastRunResult = null } =
     await ext.storage.local.get(['settings', 'monthHistory', 'historyMonth', 'lastRunResult']);
   applyTheme(settings.theme || 'dark');
-  $('enabled').checked = !!settings.enabled;
-  updateScheduleDayUI(settings.runDay || 'Tue');
+  $('enabled').checked = settings.enabled !== undefined ? !!settings.enabled : true;
+  updateScheduleDayUI(settings.runDay || 'Thu');
   $('runAt').value = settings.runAt || '09:05';
   if ($('pageVersion')) {
     $('pageVersion').value = settings.pageVersion || 'v2';
@@ -122,7 +118,7 @@ ext.storage.onChanged.addListener((changes, area) => {
 
 $('save').addEventListener('click', async () => {
   $('status').classList.remove('error');
-  const runDay = $('runDay')?.value === 'Thu' ? 'Thu' : 'Tue';
+  const runDay = $('runDay')?.value === 'Tue' ? 'Tue' : 'Thu';
   const dayLabel = DAY_LABELS[runDay];
   const runAt = $('runAt').value;
   const [h, m] = runAt.split(':').map(Number);
@@ -147,33 +143,6 @@ $('save').addEventListener('click', async () => {
   await ext.storage.local.set({ settings });
   ext.runtime.sendMessage({ type: 'RESCHEDULE' });
   $('status').textContent = 'Settings saved.';
-});
-
-async function ensureContentScript(tabId) {
-  try {
-    const pong = await ext.tabs.sendMessage(tabId, { type: 'PING' });
-    if (pong?.ok) return;
-  } catch (e) {
-    // If PING fails, content script needs injection
-  }
-  await ext.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
-}
-
-$('test').addEventListener('click', async () => {
-  $('status').classList.remove('error');
-  $('status').textContent = 'Checking CAMU page…';
-  try {
-    const [tab] = await ext.tabs.query({ active: true, lastFocusedWindow: true });
-    if (!tab?.id || !isCamuLeavePage(tab.url)) {
-      $('status').textContent = 'Open the CAMU Leave Management page (v1 or v2) first.';
-      return;
-    }
-    await ensureContentScript(tab.id);
-    const r = await ext.tabs.sendMessage(tab.id, { type: 'DETECT_ONLY' });
-    $('status').textContent = r?.message || 'Detection finished.';
-  } catch (e) {
-    $('status').textContent = 'Could not inspect CAMU page: ' + e.message;
-  }
 });
 
 $('runNow').addEventListener('click', async () => {

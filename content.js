@@ -849,8 +849,8 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
             o[x.type] = x.value;
             return o;
           }, {});
-        const targetDay = settings.runDay === 'Thu' ? 'Thu' : 'Tue';
-        const targetDayName = targetDay === 'Thu' ? 'Thursday' : 'Tuesday';
+        const targetDay = settings.runDay === 'Tue' ? 'Tue' : 'Thu';
+        const targetDayName = targetDay === 'Tue' ? 'Tuesday' : 'Thursday';
         const minute = Number(p.hour) * 60 + Number(p.minute);
         if (p.weekday !== targetDay || minute < 540 || minute > 1380) {
           throw new Error(`Outside the permitted ${targetDayName} 09:00–23:00 window.`);
@@ -885,36 +885,10 @@ if (window.__CAMU_AUTOPASS_CONTENT_LOADED__) {
     }
   }
 
-  async function detectOnly() {
-    return {
-      url: location.href,
-      applyButton: !!findApplyButton(),
-      formOpen: isFormAlreadyOpen(),
-      leaveTypeField: !!labelElement('Leave Type'),
-      dateInputs: findDateFields().length,
-      gatePassCheckbox: !!findLabel('Apply gate pass'),
-      gatePassTypeField: !!labelElement('Gate Pass Type'),
-      timeInputs: findTimeInputs().length,
-      saveButton: !!findButton(['Save']),
-    };
-  }
-
   ext.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg?.type === 'PING') {
       sendResponse({ ok: true });
       return;
-    }
-    if (msg?.type === 'DETECT_ONLY') {
-      detectOnly().then((r) => {
-        const onTarget = location.pathname.startsWith('/v2/leaveManagement');
-        sendResponse({
-          message: onTarget
-            ? 'Detection: ' + JSON.stringify(r)
-            : 'Wrong CAMU page. Open https://student.camu.in/v2/leaveManagement and run detection again. Current page: ' +
-              location.href,
-        });
-      });
-      return true;
     }
     if (msg?.type === 'START_AUTOPASS' || msg?.type === 'RUN_MANUAL') {
       const manual = msg.type === 'RUN_MANUAL';

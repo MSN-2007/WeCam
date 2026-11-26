@@ -21,25 +21,25 @@
             <option value="light">Light</option>
           </select>
         </label>
-        <span class="pill">V3.6</span>
+        <span class="pill">V3.7</span>
       </div>
     </header>
 
     <label class="toggle">
       <span>
         <b>Automation enabled</b>
-        <small id="scheduleHint">Scheduled run on Tuesday; manual run available anytime</small>
+        <small id="scheduleHint">Scheduled run on Thursday; manual run available anytime</small>
       </span>
-      <input id="enabled" type="checkbox">
+      <input id="enabled" type="checkbox" checked>
     </label>
 
     <section>
-      <h2 id="scheduleHeading">Tuesday schedule</h2>
+      <h2 id="scheduleHeading">Thursday schedule</h2>
       <label>
         Schedule day
         <select id="runDay">
+          <option value="Thu" selected>Thursday</option>
           <option value="Tue">Tuesday</option>
-          <option value="Thu">Thursday</option>
         </select>
       </label>
       <label>
@@ -81,7 +81,6 @@
 
     <button id="runNow" class="run-now">Run now — fill and submit</button>
     <button id="save">Save settings</button>
-    <button id="test" class="secondary">Test page detection (no submission)</button>
     <output id="status"></output>
     <footer>CAMU login must be active. The extension runs silently in the background (active: false), fills and submits the leave requests, and closes the tab automatically without user interruption.</footer>
   </main>
